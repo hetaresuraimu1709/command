@@ -76,7 +76,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	c_field->Init();
 	//Npc *c_npc = new Npc();
 	//c_npc->Init();
-	Chara_Status_Load(c_player->c_ally, 3);
 	int scene = s_title;
 	bool game_end_flag = false;
 	load.end_flag = true;
@@ -98,10 +97,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		switch (scene)
 		{
 		case s_title:
-			c_title->Move(&scene, c_music, &game_end_flag);
+			c_title->Move(&scene, c_music, &game_end_flag, c_player);
 			break;
 		case s_field:
-			Status_Check(c_player->c_ally[0].status, c_player->c_ally[1].status, c_player->c_ally[2].status);
+			//Status_Check(c_player->c_ally[0].status, c_player->c_ally[1].status, c_player->c_ally[2].status);
 			//c_npc->Updata();
 			if (!c_player->menu_open_flag)
 			{

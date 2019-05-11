@@ -45,19 +45,21 @@ Title::Title()
 	for (int i = 0; i < 2; i++)
 	{
 		suraimu[i] = Get_Graph("data/title/title_suraimu.png", VectorGet((float)((SCREEN_W / 4) * (1 + i) + 250), 705.0f + (i * 25)), 0.8f);
+		cursor_count[i] = 0;
 	}
 	anim_count = 0;
 	anim_frame = 0;
-	gamestart_pos = VectorGet(800.0f, (float)((SCREEN_H / 2) + 350));
+	gamestart_pos = VectorGet(800.0f, (float)((SCREEN_H / 2) + 200));
 	cursor_pos = VectorGet(gamestart_pos.x - 20.0f, gamestart_pos.y + 10.0f);
 	window_pos = VectorGet(gamestart_pos.x - 220.0f, gamestart_pos.y - 50.0f);
+	window_size = VectorGet(KEY_3RD_COMMAND_SIZE_X, KEY_3RD_COMMAND_SIZE_Y + 130.0f);
 }
 
 Title::~Title()
 {
 }
 
-void Title::Move(int *scene, Music *music, bool *game_end_flag)
+void Title::Move(int *scene, Music *music, bool *game_end_flag, Player *player)
 {
 	graph_up_down(&main_title, &main_title.enl, 0.85f, 0.75f, 0.001f);
 	for (int i = 0; i < 3; i++)
@@ -68,18 +70,7 @@ void Title::Move(int *scene, Music *music, bool *game_end_flag)
 	{
 		graph_up_down(&suraimu[i], &suraimu[i].pos.y, 755.0f, 700.0f, 1.0f);
 	}
-	if (getKey(KEY_INPUT_W) == KEY_STATE_PUSHDOWN || getKey(KEY_INPUT_S) == KEY_STATE_PUSHDOWN)
-	{
-		music->cursor_move();
-		if (cursor_pos.y == gamestart_pos.y + 10.0f)
-		{
-			cursor_pos.y = gamestart_pos.y + 110.0f;
-		}
-		else
-		{
-			cursor_pos.y = gamestart_pos.y + 10.0f;
-		}
-	}
+	Set_Move_Cursor(&cursor_pos.y, KEY_INPUT_W, KEY_INPUT_S, gamestart_pos.y + 10.0f, 3, 100.0f, &cursor_count[0], &cursor_count[1], *music);
 	if (getKey(KEY_INPUT_RETURN) == KEY_STATE_PULLUP)
 	{
 		if (cursor_pos.y == gamestart_pos.y + 10.0f)
@@ -87,6 +78,19 @@ void Title::Move(int *scene, Music *music, bool *game_end_flag)
 			music->title_enter();
 			music->title_theme_Stop();
 			music->title_theme_flag_reset();
+			Chara_Status_Load(player->c_ally, 3, 0);
+			if (getKey(KEY_INPUT_Z) == KEY_STATE_PRESSED)
+			{
+				Chara_Status_Load(player->c_ally, 3, -1);
+			}
+			*scene = s_field;
+		}
+		else if (cursor_pos.y == gamestart_pos.y + 110.0f)
+		{
+			music->title_enter();
+			music->title_theme_Stop();
+			music->title_theme_flag_reset();
+			Chara_Status_Load(player->c_ally, 3, 1);
 			*scene = s_field;
 		}
 		else
@@ -119,9 +123,10 @@ void Title::Draw(Comment_string *comment, Music *music, Window *window)
 	{
 		DrawRotaGraph((int)suraimu[i].pos.x, (int)suraimu[i].pos.y, (double)suraimu[i].enl, 0.0f, suraimu[i].graph, true);
 	}
-	window->Command_Draw(window_pos.x, window_pos.y, KEY_3RD_COMMAND_SIZE_X, KEY_3RD_COMMAND_SIZE_Y);
-	comment->Draw(gamestart_pos.x, gamestart_pos.y, "げーむすたーと！");
-	comment->Draw(gamestart_pos.x, gamestart_pos.y + 100.0f, "げーむおわり！");
+	window->Command_Draw(window_pos.x, window_pos.y, window_size.x, window_size.y);
+	comment->Draw(gamestart_pos.x, gamestart_pos.y, "さいしょから！");
+	comment->Draw(gamestart_pos.x, gamestart_pos.y + 100.0f, "つづきから！");
+	comment->Draw(gamestart_pos.x, gamestart_pos.y + 200.0f, "げーむおわり！");
 	DrawGraph((int)cursor_pos.x, (int)cursor_pos.y, cursor_graph[anim_frame], true);
 	DrawRotaGraph((int)main_title.pos.x, (int)main_title.pos.y, (double)main_title.enl, 0.0f, main_title.graph, true);
 }

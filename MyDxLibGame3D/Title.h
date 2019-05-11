@@ -16,7 +16,7 @@ class Title
 public:
 	Title();//コンストラクタ
 	~Title();//デストラクタ
-	void Move(int *scene, Music *music, bool *game_end_flag);//動き
+	void Move(int *scene, Music *music, bool *game_end_flag, Player *player);//動き
 	void Draw(Comment_string *comment, Music *music, Window *window);//描画
 private:
 	Graph main_title;
@@ -29,6 +29,8 @@ private:
 	Vector2 gamestart_pos;
 	Vector2 cursor_pos;
 	Vector2 window_pos;
+	Vector2 window_size;
+	int cursor_count[2];
 };
 
 class End

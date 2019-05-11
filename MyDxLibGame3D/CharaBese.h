@@ -57,6 +57,10 @@ public:
 	bool damage_ones_flag;
 
 	int damage_move_y;
+
+	bool jump_flag;
+	float jump_pow;
+	int jump_num;
 };
 
 

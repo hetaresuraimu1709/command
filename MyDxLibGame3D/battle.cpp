@@ -861,8 +861,16 @@ void Battle::Hit_And_Awey(Chara *chara, Chara *enemy, bool *chara_move_flag2, bo
                 Enemy_Kill_Next(chara, enemy, enemy_num);
 	        	float between = Vector_Length(Sub_Vector_Vector(chara->b_pos, enemy[j].b_pos));
 	        	Chara_Smooth(&chara->b_pos, enemy[j].b_pos, 3.0f);
+				if (!chara->jump_flag && chara->jump_num < 3)
+				{
+					chara->jump_flag = true;
+					chara->jump_num++;
+				}
+				Jump(chara);
 	        	if (Cursor(between, 0))
 	        	{
+					chara->jump_flag = false;
+					chara->jump_num = 0;
 	        		*chara_move_flag2 = true;
 	        	}
 	        }
@@ -1291,8 +1299,8 @@ void Level_Up(Chara *chara, int pattern)
 		chara->status[_def_] += chara->status[_def_] / def_up_rate - chara_level_stats_up_rock;
 		chara->status[_m_pow_] += chara->status[_m_pow_] / m_pow_up_rate - chara_level_stats_up_rock;
 		chara->status[_m_res_] += chara->status[_m_res_] / m_res_up_rate - chara_level_stats_up_rock;
-		chara->status[_ski_] = chara->status[_ski_] / ski_up_rate - chara_level_stats_up_rock;
-		chara->status[_spd_] = chara->status[_spd_] / spd_up_rate - chara_level_stats_up_rock;
+		chara->status[_ski_] += chara->status[_ski_] / ski_up_rate - chara_level_stats_up_rock;
+		chara->status[_spd_] += chara->status[_spd_] / spd_up_rate - chara_level_stats_up_rock;
 		chara->status[_exp_goal_] = ((chara->status[_exp_goal_] * 2) + (chara->status[_exp_goal_] / 2) + (chara->status[_exp_goal_] % 2));
 	}
 }

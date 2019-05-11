@@ -131,9 +131,20 @@ void Status_Check(int *data1, int *data2, int *data3)
 	}
 }
 
-void Chara_Status_Load(Chara *chara ,int num)
+void Chara_Status_Load(Chara *chara ,int num, int pattern)
 {
-	LOAD_FILE->FileLoader("data/save/chara_stats.csv", 3);
+	if (pattern == 0)
+	{
+		LOAD_FILE->FileLoader("data/save/chara_stats_base.csv", 3);
+	}
+	else if (pattern == -1)
+	{
+		LOAD_FILE->FileLoader("data/save/chara_stats_debug.csv", 3);
+	}
+	else
+	{
+		LOAD_FILE->FileLoader("data/save/chara_stats_now.csv", 3);
+	}
 
 	for (int j = 0; j < num; j++)
 	{
@@ -145,7 +156,7 @@ void Chara_Status_Load(Chara *chara ,int num)
 }
 void Chara_Status_Save(Chara *chara)
 {
-	LOAD_FILE->File_Status_Writier("data/save/chara_stats_test.csv", 3, chara);
+	LOAD_FILE->File_Status_Writier("data/save/chara_stats_now.csv", 3, chara);
 }
 
 //ステータス代入
@@ -202,6 +213,10 @@ Chara Status_Get(std::string chara_name, char *file_name, Vector3 f_pos, Vector3
 
 	name.damage_ones_flag	= false;
 
+	name.jump_flag = false;
+	name.jump_pow = 0.0f;
+	name.jump_num = 0;
+
 	return name;
 }
 
@@ -227,6 +242,21 @@ Inventory Inventory_Get(int number,bool use_flag,int damage_bonus,int force, std
 	Inv.force = force;
 	Inv.name = name;
 	return Inv;
+}
+
+void Jump(Chara *chara)
+{
+	if (chara->jump_flag)
+	{
+		chara->b_pos.y += chara->jump_pow;
+		chara->jump_pow -= GRAVITY;
+		if (chara->b_pos.y < 0.0f)
+		{
+			chara->b_pos.y = 0.0f;
+			chara->jump_flag = false;
+			chara->jump_pow = 3.0f;
+		}
+	}
 }
 
 //エネミーの一定距離に入った時

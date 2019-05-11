@@ -390,7 +390,7 @@ void Player::VectorReset()
 //描画
 void Player::Draw()
 {
-	printfDx("%f\n", AnimNowTime);
+	//printfDx("%f\n", AnimNowTime);
 	// アニメーション再生時間がアニメーションの総時間を越えていたらループさせる
 	if (AnimNowTime >= AnimTotalTime[now_anim])
 	{
