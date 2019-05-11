@@ -1049,7 +1049,7 @@ void Battle::In(Chara *ally1, Chara *ally2, Chara *ally3, Chara *enemy1, Chara *
     }
     else
     {
-        m_enemy[0].b_pos = VectorGet(ENEMY_B_POS_X + 33, 0, ENEMY_B_POS_Y);
+        m_enemy[0].b_pos = VectorGet(ENEMY_B_POS_X + 33,       0, ENEMY_B_POS_Y);
         m_enemy[1].b_pos = VectorGet(ENEMY_B_POS_X + (33 * 2), 0, ENEMY_B_POS_Y);
         m_enemy[2].b_pos = VectorGet(ENEMY_B_POS_X + (33 * 3), 0, ENEMY_B_POS_Y);
         m_enemy[3].b_pos = VectorGet(ENEMY_B_POS_X + (33 * 4), 0, ENEMY_B_POS_Y);
@@ -1107,18 +1107,10 @@ void Battle::In(Chara *ally1, Chara *ally2, Chara *ally3, Chara *enemy1, Chara *
 //************************************************************************
 Battle::Battle()
 {
-	//ƒRƒ}ƒ“ƒh˜g
-	{
-		first_frame_graph    = LoadGraph("data/command/comment.png");
-        status_command_graph = LoadGraph("data/command/command_status.png");
-        name_command_graph   = LoadGraph("data/command/command_name.png");
-        one_command_graph    = LoadGraph("data/command/command_1.png");
-		two_command_graph    = LoadGraph("data/command/command_2.png");
-		three_command_graph  = LoadGraph("data/command/command_3.png");
-		magic_command_graph  = two_command_graph;
-	}
 	//ƒJ[ƒ\ƒ‹
 	LoadDivGraph("data/command/key.png", 8, 8, 1, 35, 25, key_graph);
+	first_frame_graph = LoadGraph("data/command/comment.png");
+
 	//”Žš
 	LoadDivGraph("data/command/number.png",        NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, count_graph);
     LoadDivGraph("data/command/number_orange.png", NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, count_graph_orange);
@@ -1456,45 +1448,7 @@ void Battle::Draw(int *scene, Player *player, Enemy *enemy, Map *map, Camera *ca
 		    Command_Smooth(&command_pos[1], VectorGet(10.0f, 10.0f), KEY_SPEED);
 		    //ƒLƒƒƒ‰‚ÌƒXƒe[ƒ^ƒX
 			window->Command_Draw(command_pos[1].x, command_pos[1].y, STATUS_COMMAND_SIZE_X, STATUS_COMMAND_SIZE_Y);
-			for (int i = 0; i < 3; i++)
-			{
-				Vector2 pos = VectorGet((float)(command_pos[1].x + 120 + (i * 290)), (float)(command_pos[1].y + 70));
-				Set_HPber(pos.x, pos.y, (float)m_ally[i].status[_exp_] / (float)m_ally[i].status[_exp_goal_], GetColor(255, 55, 55));
-				Set_HPber(pos.x, pos.y + 140, (float)m_ally[i].status[_mp_] / (float)m_ally[i].status[_max_mp_], GetColor(55, 55, 255));
-		        if (m_ally[i].status[_hp_] >= m_ally[i].status[_max_hp_] * 0.3)
-		        {
-		            comment->Draw((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 10),  m_ally[i].name);
-					comment->Draw((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 70),  "‚k‚u");
-					comment->Draw((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 140), "‚g‚o");
-					comment->Draw((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 210), "‚l‚o");
-					Set_HPber(pos.x, pos.y + 70, (float)m_ally[i].status[_hp_] / (float)m_ally[i].status[_max_hp_], GetColor(55, 255, 55));
-					Count_Draw_2D(count_graph, (int)m_ally[i].status[_level_], pos.x, pos.y, rate);
-					Count_Draw_2D(count_graph, (int)m_ally[i].status[_hp_], pos.x, pos.y + 70,  rate);
-		            Count_Draw_2D(count_graph, (int)m_ally[i].status[_mp_], pos.x, pos.y + 140, rate);
-		        }
-		        else if (m_ally[i].status[_hp_] < m_ally[i].status[_max_hp_] * 0.3)
-		        {
-		            comment->Draw_Orange((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 10),  m_ally[i].name);
-					comment->Draw_Orange((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 70),  "‚k‚u");
-					comment->Draw_Orange((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 140), "‚g‚o");
-					comment->Draw_Orange((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 210), "‚l‚o");
-					Set_HPber(pos.x, pos.y + 70, (float)m_ally[i].status[_hp_] / (float)m_ally[i].status[_max_hp_], GetColor(155, 155, 55));
-					Count_Draw_2D(count_graph_orange, (int)m_ally[i].status[_level_], pos.x, pos.y, rate);
-					Count_Draw_2D(count_graph_orange, (int)m_ally[i].status[_hp_], pos.x, pos.y + 70, rate);
-					Count_Draw_2D(count_graph_orange, (int)m_ally[i].status[_mp_], pos.x, pos.y + 140, rate);
-		        }
-		        else if (m_ally[i].status[_hp_] <= 0)
-		        {
-		            comment->Draw_Red((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 10),  m_ally[i].name);
-					comment->Draw_Red((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 70),  "‚k‚u");
-					comment->Draw_Red((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 140), "‚g‚o");
-					comment->Draw_Red((float)(command_pos[1].x + 10 + (i * 290)), (float)(command_pos[1].y + 210), "‚l‚o");
-					Set_HPber(pos.x, pos.y + 70, (float)m_ally[i].status[_hp_] / (float)m_ally[i].status[_max_hp_], GetColor(255, 55, 55));
-					Count_Draw_2D(count_graph_red, (int)m_ally[i].status[_level_], pos.x, pos.y, rate);
-					Count_Draw_2D(count_graph_red, (int)m_ally[i].status[_hp_], pos.x, pos.y + 70, rate);
-					Count_Draw_2D(count_graph_red, (int)m_ally[i].status[_mp_], pos.x, pos.y + 140, rate);
-		        }
-			}
+			status_Draw(m_ally, command_pos[1], count_graph, count_graph_orange, count_graph_red, rate, comment);
 		    //ƒLƒƒƒ‰‚ÌƒRƒ}ƒ“ƒh
 			if (!m_ally[0].turn_flag)//‚P‚o
 			{

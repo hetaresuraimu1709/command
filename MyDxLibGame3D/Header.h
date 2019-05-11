@@ -75,4 +75,5 @@ void Enemy_Count_Draw_3D(int *number_graph, int draw_count, float x, float y, fl
 void Set_HPber(float pos_x, float pos_y, float rate, int color);
 void Pos_Adjustment(Vector2 *pos);
 void Pos_Adjustment(Vector3 *pos);
+void status_Draw(Chara *chara, Vector2 command_pos, int *normal_graph, int *orange_graph, int *red_graph, float rate, Comment_string *comment);
 #endif // _HEADER_H_

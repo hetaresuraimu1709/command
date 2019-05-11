@@ -77,13 +77,7 @@ private:
 	int key_graph[8];															//カーソルの画像
 	int anim_count;																//アニメーションのためのカウント
 	int now_frame[4];															//アニメーションのためのフレーム
-	int first_frame_graph;														//最初の文字枠
-    int name_command_graph;														//１つ目のコマンドの上に表示させる名前用の枠
-    int status_command_graph;													//ステータスのコマンド枠
-	int one_command_graph;														//１つ目のコマンド枠
-	int two_command_graph;														//２つ目のコマンド枠
-	int three_command_graph;													//３つ目のコマンド枠
-	int magic_command_graph;													//魔法等のコマンド枠
+	int first_frame_graph;
 	int count_graph[10];														//数字の画像
     int count_graph_orange[10];													//数字の画像
     int count_graph_red[10];													//数字の画像

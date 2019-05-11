@@ -800,3 +800,47 @@ void Pos_Adjustment(Vector3 *pos)
 		pos->x++;
 	}
 }
+
+//ÉXÉeÅ[É^ÉXÇÉQÅ[ÉWïtÇ´Ç≈ï\é¶
+void status_Draw(Chara *chara, Vector2 command_pos, int *normal_graph, int *orange_graph, int *red_graph, float rate,Comment_string *comment)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		Vector2 pos = VectorGet((float)(command_pos.x + 120 + (i * 290)), (float)(command_pos.y + 70));
+		Set_HPber(pos.x, pos.y + 140, (float)chara[i].status[_exp_] / (float)chara[i].status[_exp_goal_], GetColor(255, 55, 55));
+		Set_HPber(pos.x, pos.y + 70, (float)chara[i].status[_mp_] / (float)chara[i].status[_max_mp_], GetColor(55, 55, 255));
+		if (chara[i].status[_hp_] >= chara[i].status[_max_hp_] * 0.3)
+		{
+			comment->Draw((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 10), chara[i].name);
+			comment->Draw((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 70), "ÇgÇo");
+			comment->Draw((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 140), "ÇlÇo");
+			comment->Draw((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 210), "ÇkÇu");
+			Set_HPber(pos.x, pos.y, (float)chara[i].status[_hp_] / (float)chara[i].status[_max_hp_], GetColor(55, 255, 55));
+			Count_Draw_2D(normal_graph, (int)chara[i].status[_hp_], pos.x, pos.y, rate);
+			Count_Draw_2D(normal_graph, (int)chara[i].status[_mp_], pos.x, pos.y + 70, rate);
+			Count_Draw_2D(normal_graph, (int)chara[i].status[_level_], pos.x, pos.y + 140, rate);
+		}
+		else if (chara[i].status[_hp_] < chara[i].status[_max_hp_] * 0.3)
+		{
+			comment->Draw_Orange((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 10), chara[i].name);
+			comment->Draw_Orange((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 70), "ÇgÇo");
+			comment->Draw_Orange((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 140), "ÇlÇo");
+			comment->Draw_Orange((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 210), "ÇkÇu");
+			Set_HPber(pos.x, pos.y, (float)chara[i].status[_hp_] / (float)chara[i].status[_max_hp_], GetColor(155, 155, 55));
+			Count_Draw_2D(orange_graph, (int)chara[i].status[_hp_], pos.x, pos.y, rate);
+			Count_Draw_2D(orange_graph, (int)chara[i].status[_mp_], pos.x, pos.y + 70, rate);
+			Count_Draw_2D(orange_graph, (int)chara[i].status[_level_], pos.x, pos.y + 140, rate);
+		}
+		else if (chara[i].status[_hp_] <= 0)
+		{
+			comment->Draw_Red((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 10), chara[i].name);
+			comment->Draw_Red((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 70), "ÇgÇo");
+			comment->Draw_Red((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 140), "ÇlÇo");
+			comment->Draw_Red((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 210), "ÇkÇu");
+			Set_HPber(pos.x, pos.y, (float)chara[i].status[_hp_] / (float)chara[i].status[_max_hp_], GetColor(255, 55, 55));
+			Count_Draw_2D(red_graph, (int)chara[i].status[_hp_], pos.x, pos.y, rate);
+			Count_Draw_2D(red_graph, (int)chara[i].status[_mp_], pos.x, pos.y + 70, rate);
+			Count_Draw_2D(red_graph, (int)chara[i].status[_level_], pos.x, pos.y + 140, rate);
+		}
+	}
+}

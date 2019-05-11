@@ -70,45 +70,7 @@ void Field::Draw(Player * player, Comment_string * comment, Window * window)
 		{
 			comment->Draw(menu_pos[0].x + 90.0f, menu_pos[0].y + 40.0f + (i*100.0f), menu_1st_item[i]);
 		}
-		for (int i = 0; i < 3; i++)
-		{
-			Vector2 pos = VectorGet((float)(menu_pos[1].x + 120 + (i * space)), (float)(menu_pos[1].y + 70));
-			Set_HPber(pos.x, pos.y, (float)player->c_ally[i].status[_exp_] / (float)player->c_ally[i].status[_exp_goal_], GetColor(255, 55, 55));
-			Set_HPber(pos.x, pos.y + 140, (float)player->c_ally[i].status[_mp_] / (float)player->c_ally[i].status[_max_mp_], GetColor(55, 55, 255));
-			if (player->c_ally[i].status[_hp_] >= player->c_ally[i].status[_max_hp_] * 0.3)
-			{
-				comment->Draw((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 10), player->c_ally[i].name);
-				comment->Draw((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 70), "‚k‚u");
-				comment->Draw((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 140), "‚g‚o");
-				comment->Draw((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 210), "‚l‚o");
-				Set_HPber(pos.x, pos.y + 70, (float)player->c_ally[i].status[_hp_] / (float)player->c_ally[i].status[_max_hp_], GetColor(55, 255, 55));
-				Count_Draw_2D(count_graph, (int)player->c_ally[i].status[_level_], pos.x, pos.y, rate);
-				Count_Draw_2D(count_graph, (int)player->c_ally[i].status[_hp_], pos.x, pos.y + 70, rate);
-				Count_Draw_2D(count_graph, (int)player->c_ally[i].status[_mp_], pos.x, pos.y + 140, rate);
-			}
-			else if (player->c_ally[i].status[_hp_] < player->c_ally[i].status[_max_hp_] * 0.3)
-			{
-				comment->Draw_Orange((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 10), player->c_ally[i].name);
-				comment->Draw_Orange((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 70), "‚k‚u");
-				comment->Draw_Orange((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 140), "‚g‚o");
-				comment->Draw_Orange((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 210), "‚l‚o");
-				Set_HPber(pos.x, pos.y + 70, (float)player->c_ally[i].status[_hp_] / (float)player->c_ally[i].status[_max_hp_], GetColor(155, 155, 55));
-				Count_Draw_2D(count_graph_orange, (int)player->c_ally[i].status[_level_], pos.x, pos.y, rate);
-				Count_Draw_2D(count_graph_orange, (int)player->c_ally[i].status[_hp_], pos.x, pos.y + 70, rate);
-				Count_Draw_2D(count_graph_orange, (int)player->c_ally[i].status[_mp_], pos.x, pos.y + 140, rate);
-			}
-			else if (player->c_ally[i].status[_hp_] <= 0)
-			{
-				comment->Draw_Red((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 10), player->c_ally[i].name);
-				comment->Draw_Red((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 70), "‚k‚u");
-				comment->Draw_Red((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 140), "‚g‚o");
-				comment->Draw_Red((float)(menu_pos[1].x + 10 + (i * space)), (float)(menu_pos[1].y + 210), "‚l‚o");
-				Set_HPber(pos.x, pos.y + 70, (float)player->c_ally[i].status[_hp_] / (float)player->c_ally[i].status[_max_hp_], GetColor(255, 55, 55));
-				Count_Draw_2D(count_graph_red, (int)player->c_ally[i].status[_level_], pos.x, pos.y, rate);
-				Count_Draw_2D(count_graph_red, (int)player->c_ally[i].status[_hp_], pos.x, pos.y + 70, rate);
-				Count_Draw_2D(count_graph_red, (int)player->c_ally[i].status[_mp_], pos.x, pos.y + 140, rate);
-			}
-		}
+		status_Draw(player->c_ally, menu_pos[1], count_graph, count_graph_orange, count_graph_red, rate, comment);
 	}
 	//‚P‚Â–Ú‚ÌƒRƒ}ƒ“ƒh—p‚ÌƒJ[ƒ\ƒ‹
 	DrawGraph((int)key_pos[0].x, (int)key_pos[0].y, key_graph[now_frame[0]], TRUE);
