@@ -10,9 +10,9 @@ Camera::Camera()
 	f_pos = VectorGet(50.0f * BATTLE_MAP_CHIP / 2, 15.f, 50.0f * BATTLE_MAP_CHIP / 2 - 30.f);
 	up = VectorGet(0.f, 1.f, 0.f);
 	// カメラの回転値を初期化
-	VRotate = 0.0f;
-	HRotate = 0.0f;
-	TRotate = 0.0f;
+	v_rotate = 0.0f;
+	h_rotate = 0.0f;
+	t_rotate = 0.0f;
 }
 
 Camera::~Camera()
@@ -98,13 +98,13 @@ void Camera::Move(Player &player, Map *map)
 	if (getKey(KEY_INPUT_LEFT) == KEY_STATE_PRESSED)
 	{
 		map->Cloud_M_Move();
-		HRotate -= DX_PI_F / 90.0f;
+		h_rotate -= DX_PI_F / 90.0f;
 		rotate(&f_pos.x, &f_pos.z, -DX_PI_F / 90.0f, player.c_ally[0].f_pos.x, player.c_ally[0].f_pos.z);//回転
 	}
 	if (getKey(KEY_INPUT_RIGHT) == KEY_STATE_PRESSED)
 	{
 		map->Cloud_P_Move();
-		HRotate += DX_PI_F / 90.0f;
+		h_rotate += DX_PI_F / 90.0f;
 		rotate(&f_pos.x, &f_pos.z, +DX_PI_F / 90.0f, player.c_ally[0].f_pos.x, player.c_ally[0].f_pos.z);//回転
 	}
 	// 上下キーでカメラをプレイヤー中心に縦回転する

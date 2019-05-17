@@ -15,7 +15,7 @@ public:
 	void DrawLoadingScreen();
 	void Init();
 	void NowLoading();
-	bool end_flag = false;
+	bool m_end_flag = false;
 private:
 	// ‰æ‘œƒnƒ“ƒhƒ‹
 	int GrHandle[FILENUM];

@@ -108,7 +108,7 @@ void Player::Move(Camera *camera,Map *map)
 	// 上に進む処理
 	if (getKey(KEY_INPUT_W) == KEY_STATE_PRESSED)
 	{
-		dir_angle = camera->HRotate;
+		dir_angle = camera->h_rotate;
 		UpMove = Sub_Vector_Vector(c_ally[0].f_pos,camera->f_pos);//前へのベクトル取得
 		UpMove = Vector_Normalize(UpMove);//正規化する
 		UpMove = Mul_Vector_Scaler(UpMove, 1.0f);//移動速度調整
@@ -118,7 +118,7 @@ void Player::Move(Camera *camera,Map *map)
 	// 下に進む処理
 	else if (getKey(KEY_INPUT_S) == KEY_STATE_PRESSED)
 	{
-		dir_angle = camera->HRotate;
+		dir_angle = camera->h_rotate;
 		DownMove = Sub_Vector_Vector(c_ally[0].f_pos, camera->f_pos);//後ろベクトル取得
 		DownMove = Mul_Vector_Scaler(DownMove, -1.0f);//前の逆だから反転させる
 		DownMove = Vector_Normalize(DownMove);//正規化する
@@ -129,7 +129,7 @@ void Player::Move(Camera *camera,Map *map)
 	// 右に進む処理
 	if (getKey(KEY_INPUT_D) == KEY_STATE_PRESSED)
 	{
-		dir_angle = camera->HRotate;
+		dir_angle = camera->h_rotate;
 		RightMove = Vector_Cross(camera->up, Sub_Vector_Vector(c_ally[0].f_pos, camera->f_pos));//右ベクトル取得
 		RightMove = Vector_Normalize(RightMove);//正規化する
 		RightMove = Mul_Vector_Scaler(RightMove, 1.0f);//移動速度調整
@@ -139,7 +139,7 @@ void Player::Move(Camera *camera,Map *map)
 	// 左に進む処理
 	else if (getKey(KEY_INPUT_A) == KEY_STATE_PRESSED)
 	{
-		dir_angle = camera->HRotate;
+		dir_angle = camera->h_rotate;
 		LeftMove = Vector_Cross(Sub_Vector_Vector(c_ally[0].f_pos, camera->f_pos), camera->up);//左へのベクトル取得
 		LeftMove = Vector_Normalize(LeftMove);//正規化
 		LeftMove = Mul_Vector_Scaler(LeftMove, 1.0f);//移動速度調整
@@ -217,7 +217,7 @@ void Player::Move(Camera *camera,Map *map)
 		if (map->now_floor < 4)
 		{
 			map->now_floor++;
-			camera->HRotate = 0;
+			camera->h_rotate = 0;
 			dir_angle_plas = 0;
 			warp_flag = false;
 			c_ally[0].f_pos = VectorGet(50.0f * BATTLE_MAP_CHIP / 2, 0.0f, 50.0f * BATTLE_MAP_CHIP / 2);

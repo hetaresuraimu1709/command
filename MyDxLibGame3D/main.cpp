@@ -78,7 +78,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//c_npc->Init();
 	int scene = s_title;
 	bool game_end_flag = false;
-	load.end_flag = true;
+	load.m_end_flag = true;
 	c_map->now_floor = 1;
 
 	// エスケープキーが押されるかウインドウが閉じられるまでループ

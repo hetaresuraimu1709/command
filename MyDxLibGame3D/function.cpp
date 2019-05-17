@@ -131,32 +131,38 @@ void Status_Check(int *data1, int *data2, int *data3)
 	}
 }
 
-void Chara_Status_Load(Chara *chara ,int num, int pattern)
+void Status_Loader(Chara *chara, int num, const char *_filename)
 {
-	if (pattern == 0)
-	{
-		LOAD_FILE->FileLoader("data/save/chara_stats_base.csv", 3);
-	}
-	else if (pattern == -1)
-	{
-		LOAD_FILE->FileLoader("data/save/chara_stats_debug.csv", 3);
-	}
-	else
-	{
-		LOAD_FILE->FileLoader("data/save/chara_stats_now.csv", 3);
-	}
+	LOAD_FILE->FileLoader(_filename, num);
 
 	for (int j = 0; j < num; j++)
 	{
 		for (int i = 0; i < 13; i++)
 		{
-			chara[j].status[i] = LOAD_FILE->FileGeter(j,i);
+			chara[j].status[i] = LOAD_FILE->FileGeter(j, i);
 		}
 	}
 }
+
+void Chara_Status_Load(Chara *chara ,int num, int pattern)
+{
+	if (pattern == 0)
+	{
+		Status_Loader(chara, num, "data/save/chara_status_base.csv");
+	}
+	else if (pattern == -1)
+	{
+		Status_Loader(chara, num, "data/save/chara_status_debug.csv");
+	}
+	else
+	{
+		Status_Loader(chara, num, "data/save/chara_status_now.csv");
+	}
+}
+
 void Chara_Status_Save(Chara *chara)
 {
-	LOAD_FILE->File_Status_Writier("data/save/chara_stats_now.csv", 3, chara);
+	LOAD_FILE->File_Status_Writier("data/save/chara_status_now.csv", 3, chara);
 }
 
 //ステータス代入
@@ -548,36 +554,36 @@ bool Cursor(float pos, float max) { return pos >= max - BOKASI && pos <= max + B
 
 //カーソルを動かすもの、上or下or右or左の１方向で上限も決めれる
 //(カーソルの座標、どのキー押したか、カーソルがいける限界の座標、コマンドの数、１コマンド間のカーソルの移動量、長押しで動くようのカウント)
-void Move_Cursor(float *key_pos, unsigned char key_code, float max, int command_max, float move, int *count, Music music)
+void Move_Cursor(float *m_key_pos, unsigned char key_code, float max, int command_max, float move, int *count, Music music)
 {
 	if (getKey(key_code) == KEY_STATE_PUSHDOWN)
 	{
 		music.cursor_move();
-		if (!Cursor(*key_pos, max))
+		if (!Cursor(*m_key_pos, max))
 		{
-			*key_pos += move;
+			*m_key_pos += move;
 		}
-		else if (Cursor(*key_pos, max))
+		else if (Cursor(*m_key_pos, max))
 		{
-			*key_pos = max + (-move * (command_max - 1));
+			*m_key_pos = max + (-move * (command_max - 1));
 		}
 	}
-	else if (getKey(key_code) == KEY_STATE_PRESSED)
+	/*else if (getKey(key_code) == KEY_STATE_PRESSED)
 	{
 		*count += 1;
 		if (*count > 20)
 		{
 			music.cursor_move();
-			if (!Cursor(*key_pos, max))
+			if (!Cursor(*m_key_pos, max))
 			{
-				*key_pos += move;
+				*m_key_pos += move;
 			}
-			else if (Cursor(*key_pos, max))
+			else if (Cursor(*m_key_pos, max))
 			{
-				*key_pos = max + (-move * (command_max - 1));
+				*m_key_pos = max + (-move * (command_max - 1));
 			}
 		}
-	}
+	}*/
 	else if (getKey(key_code) == KEY_STATE_PULLUP)
 	{
 		*count = 0;
@@ -586,10 +592,10 @@ void Move_Cursor(float *key_pos, unsigned char key_code, float max, int command_
 
 //Move_Cursorを上下or左右でまとめたもの
 //(カーソルの座標、どのキー押したか１、どのキー押したか２、カーソルがいける限界の座標、コマンドの数、１コマンド間のカーソルの移動量、長押しで動くようのカウント１、長押しで動くようのカウント２)
-void Set_Move_Cursor(float *key_pos, unsigned char key_code_1, unsigned char key_code_2, float max, int command_max, float move, int *count_1, int *count_2, Music music)
+void Set_Move_Cursor(float *m_key_pos, unsigned char key_code_1, unsigned char key_code_2, float max, int command_max, float move, int *count_1, int *count_2, Music music)
 {
-	Move_Cursor(key_pos, key_code_1, max, command_max, -move, count_1, music);
-	Move_Cursor(key_pos, key_code_2, max + (move * (command_max - 1)), command_max, move, count_2, music);
+	Move_Cursor(m_key_pos, key_code_1, max, command_max, -move, count_1, music);
+	Move_Cursor(m_key_pos, key_code_2, max + (move * (command_max - 1)), command_max, move, count_2, music);
 }
 
 //カーソルにあったコマンドを入力するもの、入力後のカーソルの場所も指定する
@@ -802,19 +808,19 @@ void Pos_Adjustment(Vector3 *pos)
 }
 
 //ステータスをゲージ付きで表示
-void status_Draw(Chara *chara, Vector2 command_pos, int *normal_graph, int *orange_graph, int *red_graph, float rate,Comment_string *comment)
+void Status_Draw(Chara *chara, int chara_num, Vector2 m_command_pos, int *normal_graph, int *orange_graph, int *red_graph, float rate, Comment_string *comment)
 {
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < chara_num; i++)
 	{
-		Vector2 pos = VectorGet((float)(command_pos.x + 120 + (i * 290)), (float)(command_pos.y + 70));
+		Vector2 pos = VectorGet((float)(m_command_pos.x + 120 + (i * 290)), (float)(m_command_pos.y + 70));
 		Set_HPber(pos.x, pos.y + 140, (float)chara[i].status[_exp_] / (float)chara[i].status[_exp_goal_], GetColor(255, 55, 55));
 		Set_HPber(pos.x, pos.y + 70, (float)chara[i].status[_mp_] / (float)chara[i].status[_max_mp_], GetColor(55, 55, 255));
 		if (chara[i].status[_hp_] >= chara[i].status[_max_hp_] * 0.3)
 		{
-			comment->Draw((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 10), chara[i].name);
-			comment->Draw((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 70), "ＨＰ");
-			comment->Draw((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 140), "ＭＰ");
-			comment->Draw((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 210), "ＬＶ");
+			comment->Draw((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 10), chara[i].name);
+			comment->Draw((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 70), "ＨＰ");
+			comment->Draw((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 140), "ＭＰ");
+			comment->Draw((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 210), "ＬＶ");
 			Set_HPber(pos.x, pos.y, (float)chara[i].status[_hp_] / (float)chara[i].status[_max_hp_], GetColor(55, 255, 55));
 			Count_Draw_2D(normal_graph, (int)chara[i].status[_hp_], pos.x, pos.y, rate);
 			Count_Draw_2D(normal_graph, (int)chara[i].status[_mp_], pos.x, pos.y + 70, rate);
@@ -822,10 +828,10 @@ void status_Draw(Chara *chara, Vector2 command_pos, int *normal_graph, int *oran
 		}
 		else if (chara[i].status[_hp_] < chara[i].status[_max_hp_] * 0.3)
 		{
-			comment->Draw_Orange((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 10), chara[i].name);
-			comment->Draw_Orange((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 70), "ＨＰ");
-			comment->Draw_Orange((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 140), "ＭＰ");
-			comment->Draw_Orange((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 210), "ＬＶ");
+			comment->Draw_Orange((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 10), chara[i].name);
+			comment->Draw_Orange((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 70), "ＨＰ");
+			comment->Draw_Orange((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 140), "ＭＰ");
+			comment->Draw_Orange((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 210), "ＬＶ");
 			Set_HPber(pos.x, pos.y, (float)chara[i].status[_hp_] / (float)chara[i].status[_max_hp_], GetColor(155, 155, 55));
 			Count_Draw_2D(orange_graph, (int)chara[i].status[_hp_], pos.x, pos.y, rate);
 			Count_Draw_2D(orange_graph, (int)chara[i].status[_mp_], pos.x, pos.y + 70, rate);
@@ -833,10 +839,10 @@ void status_Draw(Chara *chara, Vector2 command_pos, int *normal_graph, int *oran
 		}
 		else if (chara[i].status[_hp_] <= 0)
 		{
-			comment->Draw_Red((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 10), chara[i].name);
-			comment->Draw_Red((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 70), "ＨＰ");
-			comment->Draw_Red((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 140), "ＭＰ");
-			comment->Draw_Red((float)(command_pos.x + 10 + (i * 290)), (float)(command_pos.y + 210), "ＬＶ");
+			comment->Draw_Red((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 10), chara[i].name);
+			comment->Draw_Red((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 70), "ＨＰ");
+			comment->Draw_Red((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 140), "ＭＰ");
+			comment->Draw_Red((float)(m_command_pos.x + 10 + (i * 290)), (float)(m_command_pos.y + 210), "ＬＶ");
 			Set_HPber(pos.x, pos.y, (float)chara[i].status[_hp_] / (float)chara[i].status[_max_hp_], GetColor(255, 55, 55));
 			Count_Draw_2D(red_graph, (int)chara[i].status[_hp_], pos.x, pos.y, rate);
 			Count_Draw_2D(red_graph, (int)chara[i].status[_mp_], pos.x, pos.y + 70, rate);

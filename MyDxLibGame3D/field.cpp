@@ -2,10 +2,10 @@
 
 Field::Field()
 {
-	LoadDivGraph("data/command/key.png", 8, 8, 1, 35, 25, key_graph);
-	LoadDivGraph("data/command/number.png", NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, count_graph);
-	LoadDivGraph("data/command/number_orange.png", NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, count_graph_orange);
-	LoadDivGraph("data/command/number_red.png", NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, count_graph_red);
+	LoadDivGraph("data/command/key.png", 8, 8, 1, 35, 25, m_key_graph);
+	LoadDivGraph("data/command/number.png", NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, m_count_graph);
+	LoadDivGraph("data/command/number_orange.png", NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, m_count_graph_orange);
+	LoadDivGraph("data/command/number_red.png", NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, m_count_graph_red);
 	menu_1st_item[0] = "どうぐ";
 	menu_1st_item[1] = "まほう";
 	menu_1st_item[2] = "スキル";
@@ -20,10 +20,10 @@ Field::~Field()
 void Field::Init()
 {
 	counter = 0;
-	now_frame[0] = 0;
+	m_now_frame[0] = 0;
 	menu_pos[0] = VectorGet(-MENU_WINDOW_SIZE_X_0, 50.0f);
 	menu_pos[1] = VectorGet(50.0f, (float)SCREEN_H + 10.0f);
-	key_pos[0] = VectorGet(menu_pos[0].x + KEY_POS_X_0, menu_pos[0].y + KEY_POS_Y_0);
+	m_key_pos[0] = VectorGet(menu_pos[0].x + KEY_POS_X_0, menu_pos[0].y + KEY_POS_Y_0);
 	for (int i = 0; i < 3; i++)
 	{
 		command_flag[i] = false;
@@ -34,19 +34,19 @@ void Field::Init()
 void Field::Updata(Player *player, Music music)
 {
 	counter++;
-	key_pos[0].x = menu_pos[0].x + 55.0f;
+	m_key_pos[0].x = menu_pos[0].x + 55.0f;
 	if (player->menu_open_flag)
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			now_frame[i] = (counter / 2) % 8;
-			Set_Move_Cursor(&key_pos[i].y, KEY_INPUT_W, KEY_INPUT_S, menu_pos[i].y + 52.5f, KEY_MAX_COMMAND_0, KEY_MOVE_Y_0, &key_count[0], &key_count[1], music);
+			m_now_frame[i] = (counter / 2) % 8;
+			Set_Move_Cursor(&m_key_pos[i].y, KEY_INPUT_W, KEY_INPUT_S, menu_pos[i].y + 52.5f, KEY_MAX_COMMAND_0, KEY_MOVE_Y_0, &m_key_count[0], &m_key_count[1], music);
 			if (!command_flag[i])
 			{
 				if (i != 2)
 				{
-					Decide_Command_2(key_pos[i],
-						&key_pos[i + 1],
+					Decide_Command_2(m_key_pos[i],
+						&m_key_pos[i + 1],
 						&command_flag[i], &behavior_flag[i],
 						menu_pos[0].y + KEY_POS_Y_0, KEY_MOVE_Y_0, 0,
 						menu_pos[0].x + KEY_POS_X_0, 0, 0,
@@ -70,10 +70,10 @@ void Field::Draw(Player * player, Comment_string * comment, Window * window)
 		{
 			comment->Draw(menu_pos[0].x + 90.0f, menu_pos[0].y + 40.0f + (i*100.0f), menu_1st_item[i]);
 		}
-		status_Draw(player->c_ally, menu_pos[1], count_graph, count_graph_orange, count_graph_red, rate, comment);
+		Status_Draw(player->c_ally, 3, menu_pos[1], m_count_graph, m_count_graph_orange, m_count_graph_red, rate, comment);
 	}
 	//１つ目のコマンド用のカーソル
-	DrawGraph((int)key_pos[0].x, (int)key_pos[0].y, key_graph[now_frame[0]], TRUE);
+	DrawGraph((int)m_key_pos[0].x, (int)m_key_pos[0].y, m_key_graph[m_now_frame[0]], TRUE);
 }
 
 void Field::MenuWindow(Player * player)

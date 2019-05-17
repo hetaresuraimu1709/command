@@ -47,7 +47,7 @@ Title::Title()
 		suraimu[i] = Get_Graph("data/title/title_suraimu.png", VectorGet((float)((SCREEN_W / 4) * (1 + i) + 250), 705.0f + (i * 25)), 0.8f);
 		cursor_count[i] = 0;
 	}
-	anim_count = 0;
+	m_anim_count = 0;
 	anim_frame = 0;
 	gamestart_pos = VectorGet(800.0f, (float)((SCREEN_H / 2) + 200));
 	cursor_pos = VectorGet(gamestart_pos.x - 20.0f, gamestart_pos.y + 10.0f);
@@ -104,8 +104,8 @@ void Title::Move(int *scene, Music *music, bool *game_end_flag, Player *player)
 void Title::Draw(Comment_string *comment, Music *music, Window *window)
 {
 	//アニメーション用カウント
-	anim_count++;
-	if (anim_count % KEY_ANIM_LOAD == 0)
+	m_anim_count++;
+	if (m_anim_count % KEY_ANIM_LOAD == 0)
 	{
 		anim_frame++;
 		if (anim_frame >= KEY_ANIM_FRAME)

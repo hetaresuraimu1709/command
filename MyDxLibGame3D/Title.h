@@ -24,7 +24,7 @@ private:
 	Graph miffy[3];
 	Graph suraimu[2];
 	int cursor_graph[8];
-	int anim_count;
+	int m_anim_count;
 	int anim_frame;
 	Vector2 gamestart_pos;
 	Vector2 cursor_pos;

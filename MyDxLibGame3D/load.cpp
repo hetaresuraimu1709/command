@@ -12,7 +12,7 @@ void Load::DrawLoadingScreen()
 
 void Load::Init()
 {
-	end_flag = false;
+	m_end_flag = false;
 	now_load = LoadGraph("data/title/NowLoading.png");
 	font_enlargement = 1.0;
 	size_flag = false;
@@ -21,7 +21,7 @@ void Load::Init()
 
 void Load::NowLoading()
 {
-	if(!end_flag)
+	if(!m_end_flag)
 	{
 		// ‰æ–Ê‚Ì‰Šú‰»
 		ClearDrawScreen();

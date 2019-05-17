@@ -7,18 +7,18 @@
 
 //確率関数
 //(何パーセントか)
-bool Battle::probability(int max) { return  rand_count % 100 <= max; }
+bool Battle::probability(int max) { return  m_rand_count % 100 <= max; }
 
 //キーのアニメーション用
 //(キーナンバー)
 void Battle::Key_Anim(int number)
 {
-	if (anim_count % KEY_ANIM_LOAD == 0)
+	if (m_anim_count % KEY_ANIM_LOAD == 0)
 	{
-		now_frame[number]++;
-		if (now_frame[number] >= KEY_ANIM_FRAME)
+		m_now_frame[number]++;
+		if (m_now_frame[number] >= KEY_ANIM_FRAME)
 		{
-			now_frame[number] = 0;
+			m_now_frame[number] = 0;
 		}
 	}
 }
@@ -84,15 +84,15 @@ void Battle::Have_Spell_Draw(Chara ally, int behavior,Inventory *ally_inv, Inven
 				if (ally_inv[i].number == spell)
 				{
 					//上の３つ
-					comment->Draw((float)(command_pos[4].x + KEY_MAGIC_POS_X + 25.0f + (KEY_MAGIC_MOVE_X * i)),
-								  (float)(command_pos[4].y + KEY_MAGIC_POS_Y - 10.0f),
+					comment->Draw((float)(m_command_pos[4].x + KEY_MAGIC_POS_X + 25.0f + (KEY_MAGIC_MOVE_X * i)),
+								  (float)(m_command_pos[4].y + KEY_MAGIC_POS_Y - 10.0f),
 								  all_inv[spell].name);
 				}
 				if (ally_inv[i + 3].number == spell)
 				{
 					//下の３つ
-					comment->Draw((float)(command_pos[4].x + KEY_MAGIC_POS_X + 25.0f + (KEY_MAGIC_MOVE_X * i)),
-								  (float)((command_pos[4].y + KEY_MAGIC_POS_Y - 10.0f) + KEY_MAGIC_MOVE_Y),
+					comment->Draw((float)(m_command_pos[4].x + KEY_MAGIC_POS_X + 25.0f + (KEY_MAGIC_MOVE_X * i)),
+								  (float)((m_command_pos[4].y + KEY_MAGIC_POS_Y - 10.0f) + KEY_MAGIC_MOVE_Y),
 								  all_inv[spell].name);
 				}
 			}
@@ -203,9 +203,9 @@ void Battle::Command(int number, Music music)
 		//キーのアニメーション用
 		Key_Anim(0);
 		//上下のコマンド移動（横には動かない）
-		Set_Move_Cursor(&key_pos[0].y, KEY_INPUT_W, KEY_INPUT_S, KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y, KEY_1ST_MAX_COMMAND, KEY_1ST_MOVE_Y, &key_count[0], &key_count[1], music);
+		Set_Move_Cursor(&m_key_pos[0].y, KEY_INPUT_W, KEY_INPUT_S, KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y, KEY_1ST_MAX_COMMAND, KEY_1ST_MOVE_Y, &m_key_count[0], &m_key_count[1], music);
 		//コマンドを一個前に戻す
-		Command_Pos_Reset(&command_pos[2], VectorGet(KEY_1ST_COMMAND_X - 200.0f, KEY_1ST_COMMAND_Y), &key_pos[0], VectorGet(command_pos[2].x + KEY_1ST_POS_X, command_pos[2].y + KEY_1ST_POS_Y));
+		Command_Pos_Reset(&m_command_pos[2], VectorGet(KEY_1ST_COMMAND_X - 200.0f, KEY_1ST_COMMAND_Y), &m_key_pos[0], VectorGet(m_command_pos[2].x + KEY_1ST_POS_X, m_command_pos[2].y + KEY_1ST_POS_Y));
 		if (m_ally[0].name != m_ally[number].name)
 		{
 			if (m_ally[number - 1].who_command_flag)
@@ -227,8 +227,8 @@ void Battle::Command(int number, Music music)
 			//たたかうのとき
 			if (i == 0)
 			{
-				Decide_Command(key_pos[0],
-					&key_pos[1],
+				Decide_Command(m_key_pos[0],
+					&m_key_pos[1],
 					&m_ally[number].first_command_flag,
 					&m_ally[number].first_behavior_flag[0],
 					KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y, KEY_1ST_MOVE_Y, 0,
@@ -238,13 +238,13 @@ void Battle::Command(int number, Music music)
 			//みる、にげるのとき
 			else
 			{
-				Decide_Command(key_pos[0],
-					&key_pos[0],
+				Decide_Command(m_key_pos[0],
+					&m_key_pos[0],
 					&m_ally[number].turn_flag,
 					&m_ally[number].first_behavior_flag[i],
 					KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y, KEY_1ST_MOVE_Y, i,
 					KEY_1ST_COMMAND_X + KEY_1ST_POS_X, 0, 0,
-					VectorGet(command_pos[2].x + KEY_1ST_POS_X, command_pos[2].y + KEY_1ST_POS_Y), music);
+					VectorGet(m_command_pos[2].x + KEY_1ST_POS_X, m_command_pos[2].y + KEY_1ST_POS_Y), music);
 			}
 		}
 	}
@@ -254,10 +254,10 @@ void Battle::Command(int number, Music music)
 		//キーのアニメーション用
 		Key_Anim(1);
 		//上下左右のコマンド移動
-		Set_Move_Cursor(&key_pos[1].y, KEY_INPUT_W, KEY_INPUT_S, KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y, KEY_2ND_MAX_COMMAND_Y, KEY_2ND_MOVE_Y, &key_count[0], &key_count[1], music);
-		Set_Move_Cursor(&key_pos[1].x, KEY_INPUT_A, KEY_INPUT_D, KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_MAX_COMMAND_X, KEY_2ND_MOVE_X, &key_count[2], &key_count[3], music);
+		Set_Move_Cursor(&m_key_pos[1].y, KEY_INPUT_W, KEY_INPUT_S, KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y, KEY_2ND_MAX_COMMAND_Y, KEY_2ND_MOVE_Y, &m_key_count[0], &m_key_count[1], music);
+		Set_Move_Cursor(&m_key_pos[1].x, KEY_INPUT_A, KEY_INPUT_D, KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_MAX_COMMAND_X, KEY_2ND_MOVE_X, &m_key_count[2], &m_key_count[3], music);
 		//コマンドを一個前に戻す
-		Command_Pos_Reset(&command_pos[2], VectorGet(KEY_2ND_COMMAND_X, KEY_2ND_COMMAND_Y + 300.0f), &key_pos[1], VectorGet(KEY_1ST_COMMAND_X + KEY_1ST_POS_X, KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y));
+		Command_Pos_Reset(&m_command_pos[2], VectorGet(KEY_2ND_COMMAND_X, KEY_2ND_COMMAND_Y + 300.0f), &m_key_pos[1], VectorGet(KEY_1ST_COMMAND_X + KEY_1ST_POS_X, KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y));
 		Command_Back(m_ally[number].first_behavior_flag, &m_ally[number].first_command_flag, KEY_1ST_MAX_COMMAND, music);
 		//どれかコマンド押したら次へ
 		for (int i = 0; i < KEY_2ND_MAX_COMMAND_X; i++)
@@ -267,19 +267,19 @@ void Battle::Command(int number, Music music)
 				//ぼうぎょ、ためるのとき
 				if (i == 0 && j == 1 || i == 2 && j == 1)
 				{
-					Decide_Command(key_pos[1],
-						&key_pos[0],
+					Decide_Command(m_key_pos[1],
+						&m_key_pos[0],
 						&m_ally[number].turn_flag,
 						&m_ally[number].second_behavior_flag[i == 0 && j == 1 ? guard : sink ],
 						KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y, KEY_2ND_MOVE_Y, j,
 						KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_MOVE_X, i,
-						VectorGet(command_pos[2].x + KEY_1ST_POS_X, command_pos[2].y + KEY_1ST_POS_Y), music);
+						VectorGet(m_command_pos[2].x + KEY_1ST_POS_X, m_command_pos[2].y + KEY_1ST_POS_Y), music);
 				}
 				//こうげき、じゅもん、とくぎ、どうぐのとき
 				else
 				{
-					Decide_Command(key_pos[1],
-						i == 0 && j == 0 ? &key_pos[2] : &key_pos[3],//攻撃の時はそのままcommand３へ、それ以外はインベントリを開く
+					Decide_Command(m_key_pos[1],
+						i == 0 && j == 0 ? &m_key_pos[2] : &m_key_pos[3],//攻撃の時はそのままcommand３へ、それ以外はインベントリを開く
 						&m_ally[number].second_command_flag,
 						&m_ally[number].second_behavior_flag[j == 0 ? i : i + KEY_2ND_MAX_COMMAND_X],
 						KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y, KEY_2ND_MOVE_Y, j,
@@ -295,9 +295,9 @@ void Battle::Command(int number, Music music)
 		//キーのアニメーション用
 		Key_Anim(2);
 		//上下のコマンド移動
-		Set_Move_Cursor(&key_pos[2].y, KEY_INPUT_W, KEY_INPUT_S, KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y, KEY_3RD_MAX_COMMAND_Y, KEY_3RD_MOVE_Y, &key_count[0], &key_count[1], music);
+		Set_Move_Cursor(&m_key_pos[2].y, KEY_INPUT_W, KEY_INPUT_S, KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y, KEY_3RD_MAX_COMMAND_Y, KEY_3RD_MOVE_Y, &m_key_count[0], &m_key_count[1], music);
 		//コマンドを一個前に戻す
-		Command_Pos_Reset(&command_pos[3], VectorGet(KEY_2ND_COMMAND_X, KEY_2ND_COMMAND_Y + 300.0f), &key_pos[2], VectorGet(KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y));
+		Command_Pos_Reset(&m_command_pos[3], VectorGet(KEY_2ND_COMMAND_X, KEY_2ND_COMMAND_Y + 300.0f), &m_key_pos[2], VectorGet(KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y));
 		if (!m_ally[number].magic_command_flag)
 		{
 			//前のコマンドでこうげきを選んでたとき
@@ -314,13 +314,13 @@ void Battle::Command(int number, Music music)
 		//どれかコマンド押したら次へ
 		for (int i = 0; i < KEY_3RD_MAX_COMMAND_Y; i++)
 		{
-			Decide_Command(key_pos[2],
-				&key_pos[0],
+			Decide_Command(m_key_pos[2],
+				&m_key_pos[0],
 				&m_ally[number].turn_flag,
 				&m_ally[number].who_command_flag[i],
 				KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y, KEY_3RD_MOVE_Y, i,
 				KEY_3RD_COMMAND_X + KEY_3RD_POS_X, 0, 0,
-				VectorGet(command_pos[2].x + KEY_1ST_POS_X, command_pos[2].y + KEY_1ST_POS_Y), music);
+				VectorGet(m_command_pos[2].x + KEY_1ST_POS_X, m_command_pos[2].y + KEY_1ST_POS_Y), music);
 		}
 	}
 	//魔法、特技、アイテムのコマンドのカーソルキー
@@ -329,10 +329,10 @@ void Battle::Command(int number, Music music)
 		//キーのアニメーション用
 		Key_Anim(3);
 		//上下左右のコマンド移動
-		Set_Move_Cursor(&key_pos[3].y, KEY_INPUT_W, KEY_INPUT_S, KEY_MAGIC_COMMAND_Y + KEY_MAGIC_POS_Y, KEY_MAGIC_MAX_COMMAND_Y, KEY_MAGIC_MOVE_Y, &key_count[0], &key_count[1], music);
-		Set_Move_Cursor(&key_pos[3].x, KEY_INPUT_A, KEY_INPUT_D, KEY_MAGIC_COMMAND_X + KEY_MAGIC_POS_X, KEY_MAGIC_MAX_COMMAND_X, KEY_MAGIC_MOVE_X, &key_count[2], &key_count[3], music);
+		Set_Move_Cursor(&m_key_pos[3].y, KEY_INPUT_W, KEY_INPUT_S, KEY_MAGIC_COMMAND_Y + KEY_MAGIC_POS_Y, KEY_MAGIC_MAX_COMMAND_Y, KEY_MAGIC_MOVE_Y, &m_key_count[0], &m_key_count[1], music);
+		Set_Move_Cursor(&m_key_pos[3].x, KEY_INPUT_A, KEY_INPUT_D, KEY_MAGIC_COMMAND_X + KEY_MAGIC_POS_X, KEY_MAGIC_MAX_COMMAND_X, KEY_MAGIC_MOVE_X, &m_key_count[2], &m_key_count[3], music);
 		//コマンドを一個前に戻す
-		Command_Pos_Reset(&command_pos[4], VectorGet(KEY_MAGIC_COMMAND_X, KEY_2ND_COMMAND_Y), &key_pos[3], VectorGet(KEY_3RD_COMMAND_X + KEY_3RD_POS_X, KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y));
+		Command_Pos_Reset(&m_command_pos[4], VectorGet(KEY_MAGIC_COMMAND_X, KEY_2ND_COMMAND_Y), &m_key_pos[3], VectorGet(KEY_3RD_COMMAND_X + KEY_3RD_POS_X, KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y));
 		Command_Back(m_ally[number].second_behavior_flag, &m_ally[number].second_command_flag, KEY_2ND_MAX_COMMAND_X * KEY_2ND_MAX_COMMAND_Y, music);
 		//どれかコマンド押したら次へ
 		for (int i = 0; i < KEY_MAGIC_MAX_COMMAND_X; i++)
@@ -341,8 +341,8 @@ void Battle::Command(int number, Music music)
 			{
 				if (m_ally[number].second_behavior_flag[skill])
 				{
-					Decide_Command(key_pos[3],
-						&key_pos[2],
+					Decide_Command(m_key_pos[3],
+						&m_key_pos[2],
 						&m_ally[number].magic_command_flag,
 						&m_ally[number].skill[j == 0 ? i : i + KEY_MAGIC_MAX_COMMAND_X].use_flag,
 						KEY_MAGIC_COMMAND_Y + KEY_MAGIC_POS_Y, KEY_MAGIC_MOVE_Y, j,
@@ -351,8 +351,8 @@ void Battle::Command(int number, Music music)
 				}
 				if (m_ally[number].second_behavior_flag[magic])
 				{
-					Decide_Command(key_pos[3],
-						&key_pos[2],
+					Decide_Command(m_key_pos[3],
+						&m_key_pos[2],
 						&m_ally[number].magic_command_flag,
 						&m_ally[number].magic[j == 0 ? i : i + KEY_MAGIC_MAX_COMMAND_X].use_flag,
 						KEY_MAGIC_COMMAND_Y + KEY_MAGIC_POS_Y, KEY_MAGIC_MOVE_Y, j,
@@ -361,8 +361,8 @@ void Battle::Command(int number, Music music)
 				}
 				if (m_ally[number].second_behavior_flag[item])
 				{
-					Decide_Command(key_pos[3],
-						&key_pos[2],
+					Decide_Command(m_key_pos[3],
+						&m_key_pos[2],
 						&m_ally[number].magic_command_flag,
 						&m_ally[number].item[j == 0 ? i : i + KEY_MAGIC_MAX_COMMAND_X].use_flag,
 						KEY_MAGIC_COMMAND_Y + KEY_MAGIC_POS_Y, KEY_MAGIC_MOVE_Y, j,
@@ -372,17 +372,17 @@ void Battle::Command(int number, Music music)
 			}
 		}
 	}
-	if (m_ally[number].turn_flag && !reset_command_pos_flag)
+	if (m_ally[number].turn_flag && !m_reset_command_pos_flag)
 	{
-		Command_Smooth(&command_pos[3], VectorGet(KEY_2ND_COMMAND_X, KEY_2ND_COMMAND_Y + 300.0f), KEY_SPEED);
-		Command_Smooth(&command_pos[4], VectorGet(KEY_MAGIC_COMMAND_X, KEY_MAGIC_COMMAND_Y), KEY_SPEED);
-		Command_Smooth(&command_pos[5], VectorGet(KEY_3RD_COMMAND_X, KEY_3RD_COMMAND_Y + 300.0f), KEY_SPEED);
-		Command_Smooth(&key_pos[1], VectorGet(KEY_1ST_COMMAND_X + KEY_1ST_POS_X, KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y), KEY_SPEED);
-		Command_Smooth(&key_pos[2], VectorGet(KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y), KEY_SPEED);
-		Command_Smooth(&key_pos[3], VectorGet(KEY_3RD_COMMAND_X + KEY_3RD_POS_X, KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y), KEY_SPEED);
-		if (Cursor(command_pos[3].y, KEY_2ND_COMMAND_Y + 300.0f))
+		Command_Smooth(&m_command_pos[3], VectorGet(KEY_2ND_COMMAND_X, KEY_2ND_COMMAND_Y + 300.0f), KEY_SPEED);
+		Command_Smooth(&m_command_pos[4], VectorGet(KEY_MAGIC_COMMAND_X, KEY_MAGIC_COMMAND_Y), KEY_SPEED);
+		Command_Smooth(&m_command_pos[5], VectorGet(KEY_3RD_COMMAND_X, KEY_3RD_COMMAND_Y + 300.0f), KEY_SPEED);
+		Command_Smooth(&m_key_pos[1], VectorGet(KEY_1ST_COMMAND_X + KEY_1ST_POS_X, KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y), KEY_SPEED);
+		Command_Smooth(&m_key_pos[2], VectorGet(KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y), KEY_SPEED);
+		Command_Smooth(&m_key_pos[3], VectorGet(KEY_3RD_COMMAND_X + KEY_3RD_POS_X, KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y), KEY_SPEED);
+		if (Cursor(m_command_pos[3].y, KEY_2ND_COMMAND_Y + 300.0f))
 		{
-			reset_command_pos_flag = true;
+			m_reset_command_pos_flag = true;
 		}
 	}
 }
@@ -393,111 +393,111 @@ void Battle::Command_Choice_Draw(int number, Comment_string *comment, Window *wi
 {
 	std::size_t name_num;
 	//コマンド座標移動
-	if (!Cursor(command_pos[2].x, KEY_1ST_COMMAND_X))
+	if (!Cursor(m_command_pos[2].x, KEY_1ST_COMMAND_X))
 	{
-		Command_Smooth(&command_pos[2], VectorGet(KEY_1ST_COMMAND_X, KEY_1ST_COMMAND_Y), KEY_SPEED);
-		Command_Smooth(&key_pos[0], VectorGet(KEY_1ST_COMMAND_X + KEY_1ST_POS_X, KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y), KEY_SPEED);
+		Command_Smooth(&m_command_pos[2], VectorGet(KEY_1ST_COMMAND_X, KEY_1ST_COMMAND_Y), KEY_SPEED);
+		Command_Smooth(&m_key_pos[0], VectorGet(KEY_1ST_COMMAND_X + KEY_1ST_POS_X, KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y), KEY_SPEED);
 	}
 	//名前枠と名前
-	window->Command_Draw((float)command_pos[2].x, (float)(command_pos[2].y + NAME_COMMAND_Y), (float)NAME_COMMAND_SIZE_X, (float)NAME_COMMAND_SIZE_Y);
-	comment->Draw((float)(command_pos[2].x + 15), (float)(command_pos[2].y + NAME_COMMAND_Y + 10), m_ally[number].name);
+	window->Command_Draw((float)m_command_pos[2].x, (float)(m_command_pos[2].y + NAME_COMMAND_Y), (float)NAME_COMMAND_SIZE_X, (float)NAME_COMMAND_SIZE_Y);
+	comment->Draw((float)(m_command_pos[2].x + 15), (float)(m_command_pos[2].y + NAME_COMMAND_Y + 10), m_ally[number].name);
 	//１つ目のコマンド
-	window->Command_Draw(command_pos[2].x, command_pos[2].y, (float)KEY_1ST_COMMAND_SIZE_X, (float)KEY_1ST_COMMAND_SIZE_Y);
+	window->Command_Draw(m_command_pos[2].x, m_command_pos[2].y, (float)KEY_1ST_COMMAND_SIZE_X, (float)KEY_1ST_COMMAND_SIZE_Y);
 	//たたかう、みる、にげる
 	for (int i = 0; i < 3; i++)
 	{
-		comment->Draw(command_pos[2].x + KEY_1ST_POS_X + 25.0f,
-					  (command_pos[2].y + KEY_1ST_POS_Y - 10.0f) + (KEY_1ST_MOVE_Y*i),
-					  first_behavior[i]);
+		comment->Draw(m_command_pos[2].x + KEY_1ST_POS_X + 25.0f,
+					  (m_command_pos[2].y + KEY_1ST_POS_Y - 10.0f) + (KEY_1ST_MOVE_Y*i),
+					  m_first_behavior[i]);
 	}
 	//１つ目のコマンド用のカーソル
-	DrawGraph((int)key_pos[0].x, (int)key_pos[0].y, key_graph[now_frame[0]], TRUE);
+	DrawGraph((int)m_key_pos[0].x, (int)m_key_pos[0].y, m_key_graph[m_now_frame[0]], TRUE);
 	//２つ目のコマンド
 	if (m_ally[number].first_command_flag)
 	{
 		//コマンド座標移動
-		if (!Cursor(command_pos[3].y, KEY_2ND_COMMAND_Y))
+		if (!Cursor(m_command_pos[3].y, KEY_2ND_COMMAND_Y))
 		{
-			Command_Smooth(&command_pos[3], VectorGet(KEY_2ND_COMMAND_X, KEY_2ND_COMMAND_Y), KEY_SPEED);
-			Command_Smooth(&key_pos[1], VectorGet(KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y), KEY_SPEED);
+			Command_Smooth(&m_command_pos[3], VectorGet(KEY_2ND_COMMAND_X, KEY_2ND_COMMAND_Y), KEY_SPEED);
+			Command_Smooth(&m_key_pos[1], VectorGet(KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y), KEY_SPEED);
 		}
 		//前のコマンドを暗くする
-		window->Command_Draw(command_pos[2].x, command_pos[2].y, (float)KEY_1ST_COMMAND_SIZE_X, (float)KEY_1ST_COMMAND_SIZE_Y);
+		window->Command_Draw(m_command_pos[2].x, m_command_pos[2].y, (float)KEY_1ST_COMMAND_SIZE_X, (float)KEY_1ST_COMMAND_SIZE_Y);
 		//２つ目のコマンド枠
-		window->Command_Draw(command_pos[3].x, command_pos[3].y, (float)KEY_2ND_COMMAND_SIZE_X, (float)KEY_2ND_COMMAND_SIZE_Y);
+		window->Command_Draw(m_command_pos[3].x, m_command_pos[3].y, (float)KEY_2ND_COMMAND_SIZE_X, (float)KEY_2ND_COMMAND_SIZE_Y);
 		for (int i = 0; i < KEY_2ND_MAX_COMMAND_X; i++)
 		{
 			//こうげき、とくぎ、まほう
-			comment->Draw(command_pos[3].x + KEY_2ND_POS_X + 25.0f + (KEY_2ND_MOVE_X * i),
-						  command_pos[3].y + KEY_2ND_POS_Y - 10.0f,
-						  second_behavior[i]);
+			comment->Draw(m_command_pos[3].x + KEY_2ND_POS_X + 25.0f + (KEY_2ND_MOVE_X * i),
+						  m_command_pos[3].y + KEY_2ND_POS_Y - 10.0f,
+						  m_second_behavior[i]);
 			//ぼうぎょ、どうぐ、ためる
-			comment->Draw(command_pos[3].x + KEY_2ND_POS_X + 25.0f + (KEY_2ND_MOVE_X * i),
-						  command_pos[3].y + KEY_2ND_POS_Y - 10.0f + KEY_2ND_MOVE_Y,
-						  second_behavior[i + 3]);
+			comment->Draw(m_command_pos[3].x + KEY_2ND_POS_X + 25.0f + (KEY_2ND_MOVE_X * i),
+						  m_command_pos[3].y + KEY_2ND_POS_Y - 10.0f + KEY_2ND_MOVE_Y,
+						  m_second_behavior[i + 3]);
 		}
 		//２つ目のコマンド用のカーソル
-		DrawGraph((int)key_pos[1].x, (int)key_pos[1].y, key_graph[now_frame[1]], TRUE);
+		DrawGraph((int)m_key_pos[1].x, (int)m_key_pos[1].y, m_key_graph[m_now_frame[1]], TRUE);
 	}
 	//魔法等のコマンド
 	if (m_ally[number].second_command_flag && !m_ally[number].second_behavior_flag[attack] && !m_ally[number].second_behavior_flag[guard] && !m_ally[number].second_behavior_flag[sink])
 	{
 		//コマンド座標移動
-		if (!Cursor(command_pos[4].y, KEY_MAGIC_COMMAND_Y))
+		if (!Cursor(m_command_pos[4].y, KEY_MAGIC_COMMAND_Y))
 		{
-			Command_Smooth(&command_pos[4], VectorGet(KEY_MAGIC_COMMAND_X, KEY_MAGIC_COMMAND_Y), KEY_SPEED);
-			Command_Smooth(&key_pos[3], VectorGet(KEY_MAGIC_COMMAND_X + KEY_MAGIC_POS_X, KEY_MAGIC_COMMAND_Y + KEY_MAGIC_POS_Y), KEY_SPEED);
+			Command_Smooth(&m_command_pos[4], VectorGet(KEY_MAGIC_COMMAND_X, KEY_MAGIC_COMMAND_Y), KEY_SPEED);
+			Command_Smooth(&m_key_pos[3], VectorGet(KEY_MAGIC_COMMAND_X + KEY_MAGIC_POS_X, KEY_MAGIC_COMMAND_Y + KEY_MAGIC_POS_Y), KEY_SPEED);
 		}
 		//前のコマンドを暗くする
-		window->Command_Draw(command_pos[3].x, command_pos[3].y, (float)KEY_2ND_COMMAND_SIZE_X, (float)KEY_2ND_COMMAND_SIZE_Y);
+		window->Command_Draw(m_command_pos[3].x, m_command_pos[3].y, (float)KEY_2ND_COMMAND_SIZE_X, (float)KEY_2ND_COMMAND_SIZE_Y);
 		//魔法等のコマンド枠
-		window->Command_Draw(command_pos[4].x, command_pos[4].y, (float)KEY_MAGIC_COMMAND_SIZE_X, (float)KEY_MAGIC_COMMAND_SIZE_Y);
+		window->Command_Draw(m_command_pos[4].x, m_command_pos[4].y, (float)KEY_MAGIC_COMMAND_SIZE_X, (float)KEY_MAGIC_COMMAND_SIZE_Y);
 		//覚えてる、持っているもの描画（何も覚えてなかった、持っていなかったら暗く＜なし＞と表示）
 		Have_Spell_Draw(m_ally[number], skill, m_ally[number].skill, memory->I_skill, comment);
 		Have_Spell_Draw(m_ally[number], magic, m_ally[number].magic, memory->I_spell, comment);
 		Have_Spell_Draw(m_ally[number], item,  m_ally[number].item,  memory->I_item,  comment);
 		//魔法等のコマンド用のカーソル
-		DrawGraph((int)key_pos[3].x, (int)key_pos[3].y, key_graph[now_frame[3]], TRUE);
+		DrawGraph((int)m_key_pos[3].x, (int)m_key_pos[3].y, m_key_graph[m_now_frame[3]], TRUE);
 	}
 	//３つ目のコマンド
 	if (m_ally[number].second_command_flag && m_ally[number].second_behavior_flag[attack] || m_ally[number].magic_command_flag)
 	{
 		//コマンド座標移動
-		if (!Cursor(command_pos[5].y, KEY_3RD_COMMAND_Y))
+		if (!Cursor(m_command_pos[5].y, KEY_3RD_COMMAND_Y))
 		{
-			Command_Smooth(&command_pos[5], VectorGet(KEY_3RD_COMMAND_X, KEY_3RD_COMMAND_Y), KEY_SPEED);
-			Command_Smooth(&key_pos[2], VectorGet(KEY_3RD_COMMAND_X + KEY_3RD_POS_X, KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y), KEY_SPEED);
+			Command_Smooth(&m_command_pos[5], VectorGet(KEY_3RD_COMMAND_X, KEY_3RD_COMMAND_Y), KEY_SPEED);
+			Command_Smooth(&m_key_pos[2], VectorGet(KEY_3RD_COMMAND_X + KEY_3RD_POS_X, KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y), KEY_SPEED);
 		}
 		//前のコマンドでこうげきを選んでたら
 		if (!m_ally[number].magic_command_flag)
 		{
 			//前のコマンドを暗くする
-			window->Command_Draw(command_pos[3].x, command_pos[3].y, (float)KEY_2ND_COMMAND_SIZE_X, (float)KEY_2ND_COMMAND_SIZE_Y);
+			window->Command_Draw(m_command_pos[3].x, m_command_pos[3].y, (float)KEY_2ND_COMMAND_SIZE_X, (float)KEY_2ND_COMMAND_SIZE_Y);
 		}
 		//前のコマンドでまほう、とくぎ、どうぐを選んでたら
 		if (m_ally[number].magic_command_flag)
 		{
 			//前のコマンドを暗くする
-			window->Command_Draw(command_pos[4].x, command_pos[4].y, (float)KEY_MAGIC_COMMAND_SIZE_X, (float)KEY_MAGIC_COMMAND_SIZE_Y);
+			window->Command_Draw(m_command_pos[4].x, m_command_pos[4].y, (float)KEY_MAGIC_COMMAND_SIZE_X, (float)KEY_MAGIC_COMMAND_SIZE_Y);
 		}
 		//３つ目のコマンド
-		window->Command_Draw(command_pos[5].x, command_pos[5].y, (float)KEY_3RD_COMMAND_SIZE_X, (float)KEY_3RD_COMMAND_SIZE_Y);
+		window->Command_Draw(m_command_pos[5].x, m_command_pos[5].y, (float)KEY_3RD_COMMAND_SIZE_X, (float)KEY_3RD_COMMAND_SIZE_Y);
 		//敵の名前
 		for (int i = 0; i < 4; i++)
 		{
 			name_num = m_enemy[i].name.size() / 2;
 			if (m_enemy[i].status[_hp_] > 0)
 			{
-				comment->Draw(command_pos[5].x + KEY_3RD_POS_X + 20, command_pos[5].y + KEY_3RD_POS_Y + (KEY_3RD_MOVE_Y * i) - 10, m_enemy[i].name);
-				Set_HPber((command_pos[5].x + KEY_3RD_POS_X + 15 + (name_num * 50)), (command_pos[5].y + KEY_3RD_POS_Y + (KEY_3RD_MOVE_Y * i)), (float)m_enemy[i].status[_hp_] / (float)m_enemy[i].status[_max_hp_], GetColor(55, 255, 55));
-				if (Cursor(key_pos[2].y, command_pos[5].y + KEY_3RD_POS_Y + (KEY_3RD_MOVE_Y * i)))
+				comment->Draw(m_command_pos[5].x + KEY_3RD_POS_X + 20, m_command_pos[5].y + KEY_3RD_POS_Y + (KEY_3RD_MOVE_Y * i) - 10, m_enemy[i].name);
+				Set_HPber((m_command_pos[5].x + KEY_3RD_POS_X + 15 + (name_num * 50)), (m_command_pos[5].y + KEY_3RD_POS_Y + (KEY_3RD_MOVE_Y * i)), (float)m_enemy[i].status[_hp_] / (float)m_enemy[i].status[_max_hp_], GetColor(55, 255, 55));
+				if (Cursor(m_key_pos[2].y, m_command_pos[5].y + KEY_3RD_POS_Y + (KEY_3RD_MOVE_Y * i)))
 				{
-					DrawBillboard3D(VGet(m_enemy[i].b_pos.x, m_enemy[i].b_pos.y + 10.0f, m_enemy[i].b_pos.z), 0.5f, 0.5f, 5.0f, (float)(-DX_PI / 2.0f), key_graph[now_frame[2]], TRUE);
+					DrawBillboard3D(VGet(m_enemy[i].b_pos.x, m_enemy[i].b_pos.y + 10.0f, m_enemy[i].b_pos.z), 0.5f, 0.5f, 5.0f, (float)(-DX_PI / 2.0f), m_key_graph[m_now_frame[2]], TRUE);
 				}
 			}
 		}
 		//３つ目のコマンド用のカーソル
-		DrawGraph((int)key_pos[2].x, (int)key_pos[2].y, key_graph[now_frame[2]], TRUE);
+		DrawGraph((int)m_key_pos[2].x, (int)m_key_pos[2].y, m_key_graph[m_now_frame[2]], TRUE);
 	}
 }
 //キャラの名前が同じならフラグをtrueにする
@@ -658,12 +658,12 @@ void Battle::Damage_Calculation_Set(Comment_string *comment, Chara *chara_case, 
 			if (chara_case->name == m_ally[i].name)
 			{
 				comment->Draw(command_x, command_y, "に");
-				Count_Draw_2D(count_graph, damege[i].damage, command_x + 50, command_y);
+				Count_Draw_2D(m_count_graph, damege[i].damage, command_x + 50, command_y);
 				for (int z = 0; z < 4; z++)
 				{
 					if (chara_case->who_command_flag[z])
 					{
-						Count_Draw_3D(count_graph, damege[i].damage, m_enemy[z].b_pos.x, 10.0f,m_enemy[z].b_pos.z);
+						Count_Draw_3D(m_count_graph, damege[i].damage, m_enemy[z].b_pos.x, 10.0f,m_enemy[z].b_pos.z);
 					}
 				}
 				for (int j = 1; j < 4; j++)
@@ -684,12 +684,12 @@ void Battle::Damage_Calculation_Set(Comment_string *comment, Chara *chara_case, 
 			if (chara_case->name == m_enemy[i].name)
 			{
 				comment->Draw(command_x, command_y, "に");
-				Count_Draw_2D(count_graph, damege[i + 3].damage, command_x + 50, command_y);
+				Count_Draw_2D(m_count_graph, damege[i + 3].damage, command_x + 50, command_y);
 				for (int z = 0; z < 3; z++)
 				{
 					if (chara_case->who_command_flag[z])
 					{
-						Enemy_Count_Draw_3D(count_graph, damege[i + 3].damage, m_ally[z].b_pos.x, 20.0f, m_ally[z].b_pos.z);
+						Enemy_Count_Draw_3D(m_count_graph, damege[i + 3].damage, m_ally[z].b_pos.x, 20.0f, m_ally[z].b_pos.z);
 					}
 				}
 				for (int j = 1; j < 4; j++)
@@ -713,7 +713,7 @@ void Battle::Command_Play_Draw(Comment_string *comment,Chara *chara0, Chara *cha
 	if (chara_case.command_play_flag)
 	{	
 		float command_x = (float)(FIRST_COMMAND_X + 300);
-		float command_y = (float)(command_pos[0].y + 30);
+		float command_y = (float)(m_command_pos[0].y + 30);
 		std::size_t name_num;
 		if (!chara_case.chara_move_flag2)
 		{
@@ -817,7 +817,7 @@ void Battle::Command_Play_Draw(Comment_string *comment,Chara *chara0, Chara *cha
 			command_play_count = 0;
 			if (m_enemy[0].die_flag && m_enemy[1].die_flag && m_enemy[2].die_flag && m_enemy[3].die_flag)
 			{
-				end_flag = true;
+				m_end_flag = true;
 			}
 		}
 	}
@@ -1108,27 +1108,27 @@ void Battle::In(Chara *ally1, Chara *ally2, Chara *ally3, Chara *enemy1, Chara *
 Battle::Battle()
 {
 	//カーソル
-	LoadDivGraph("data/command/key.png", 8, 8, 1, 35, 25, key_graph);
-	first_frame_graph = LoadGraph("data/command/comment.png");
+	LoadDivGraph("data/command/key.png", 8, 8, 1, 35, 25, m_key_graph);
+	m_first_frame_graph = LoadGraph("data/command/comment.png");
 
 	//数字
-	LoadDivGraph("data/command/number.png",        NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, count_graph);
-    LoadDivGraph("data/command/number_orange.png", NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, count_graph_orange);
-    LoadDivGraph("data/command/number_red.png",    NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, count_graph_red);
+	LoadDivGraph("data/command/number.png",        NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, m_count_graph);
+    LoadDivGraph("data/command/number_orange.png", NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, m_count_graph_orange);
+    LoadDivGraph("data/command/number_red.png",    NUMBER_MAX_X * NUMBER_MAX_Y, NUMBER_MAX_X, NUMBER_MAX_Y, (int)NUMBER_SIZE_X, (int)NUMBER_SIZE_Y, m_count_graph_red);
 	//たたかう、みる、にげる
 	{
-		first_behavior[battle] = "たたかう";
-		first_behavior[see] = "みる";
-		first_behavior[escape] = "にげる";
+		m_first_behavior[battle] = "たたかう";
+		m_first_behavior[see] = "みる";
+		m_first_behavior[escape] = "にげる";
 	}
 	//こうげき、とくぎ、まほう、ぼうぎょ、どうぐ、ためる
 	{
-		second_behavior[attack] = "こうげき";
-		second_behavior[skill] = "とくぎ";
-		second_behavior[magic] = "まほう";
-		second_behavior[guard] = "ぼうぎょ";
-		second_behavior[item] = "どうぐ";
-		second_behavior[sink] = "ためる";
+		m_second_behavior[attack] = "こうげき";
+		m_second_behavior[skill] = "とくぎ";
+		m_second_behavior[magic] = "まほう";
+		m_second_behavior[guard] = "ぼうぎょ";
+		m_second_behavior[item] = "どうぐ";
+		m_second_behavior[sink] = "ためる";
 	}
 }
 
@@ -1146,36 +1146,48 @@ Battle::~Battle()
 //************************************************************************
 void Battle::Init(Camera *camera, Player *player)
 {
-	rand_count = 0;
-	end_flag = false;
+	m_rand_count = 0;
+	m_end_flag = false;
     for (int i = 0; i < 10; i++)
     {
-        command_pos[i] = VectorGet(0, 0);
+        m_command_pos[i] = VectorGet(0, 0);
     }
-    command_pos[0] = VectorGet(FIRST_COMMAND_X,			   FIRST_COMMAND_Y + 200.f);
-	command_pos[1] = VectorGet(10.0f,                      -200.0f);
-    command_pos[2] = VectorGet(KEY_1ST_COMMAND_X - 200.0f, KEY_1ST_COMMAND_Y);
-	command_pos[3] = VectorGet(KEY_2ND_COMMAND_X,          KEY_2ND_COMMAND_Y + 300.0f);
-	command_pos[4] = VectorGet(KEY_MAGIC_COMMAND_X,        KEY_2ND_COMMAND_Y);
-	command_pos[5] = VectorGet(KEY_3RD_COMMAND_X,          KEY_3RD_COMMAND_Y + 300.0f);
-	key_pos[0] = VectorGet(command_pos[2].x + KEY_1ST_POS_X,   command_pos[2].y + KEY_1ST_POS_Y);
-	key_pos[1] = VectorGet(KEY_1ST_COMMAND_X + KEY_1ST_POS_X, KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y);
-	key_pos[2] = VectorGet(KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y);
-	key_pos[3] = VectorGet(KEY_3RD_COMMAND_X + KEY_3RD_POS_X, KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y);
+    m_command_pos[0] = VectorGet(FIRST_COMMAND_X,			   FIRST_COMMAND_Y + 200.f);
+	m_command_pos[1] = VectorGet(10.0f,                      -200.0f);
+    m_command_pos[2] = VectorGet(KEY_1ST_COMMAND_X - 200.0f, KEY_1ST_COMMAND_Y);
+	m_command_pos[3] = VectorGet(KEY_2ND_COMMAND_X,          KEY_2ND_COMMAND_Y + 300.0f);
+	m_command_pos[4] = VectorGet(KEY_MAGIC_COMMAND_X,        KEY_2ND_COMMAND_Y);
+	m_command_pos[5] = VectorGet(KEY_3RD_COMMAND_X,          KEY_3RD_COMMAND_Y + 300.0f);
+	m_key_pos[0] = VectorGet(m_command_pos[2].x + KEY_1ST_POS_X,   m_command_pos[2].y + KEY_1ST_POS_Y);
+	m_key_pos[1] = VectorGet(KEY_1ST_COMMAND_X + KEY_1ST_POS_X, KEY_1ST_COMMAND_Y + KEY_1ST_POS_Y);
+	m_key_pos[2] = VectorGet(KEY_2ND_COMMAND_X + KEY_2ND_POS_X, KEY_2ND_COMMAND_Y + KEY_2ND_POS_Y);
+	m_key_pos[3] = VectorGet(KEY_3RD_COMMAND_X + KEY_3RD_POS_X, KEY_3RD_COMMAND_Y + KEY_3RD_POS_Y);
 	for (int i = 0; i < 4; i++)
 	{
-		key_count[i] = 0;
-		key_move_pos[i] = 0.0f;
-		now_frame[i] = 0;
+		m_key_count[i] = 0;
+		m_key_move_pos[i] = 0.0f;
+		m_now_frame[i] = 0;
 	}
-	anim_count = 0;
+	m_anim_count = 0;
 	first_count = 0;
     turn_count = 1;
 	command_play_count = 0;
-	reset_command_pos_flag = false;
-	rast_count = 0;
+	m_reset_command_pos_flag = false;
+	m_rast_count = 0;
 	Flag_Reset();
-	camera->Flag_Reset(*player);
+	camera->Init();
+	for (int i = 0; i < 3; i++)
+	{
+		m_ally[i] = Status_Get("えらー！", "", VectorGet(0.0f, 0.0f, 0.0f), VectorGet(0.0f, 0.0f, 0.0f), 0, 0, 0, 0, 0, 0, 0, 0, 0, true);
+		m_ally[i].attack_flag = true;
+		m_ally[i].die_flag = true;
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		m_enemy[i] = Status_Get("えらー！", "", VectorGet(0.0f, 0.0f, 0.0f), VectorGet(0.0f, 0.0f, 0.0f), 0, 0, 0, 0, 0, 0, 0, 0, 0, true);
+		m_enemy[i].attack_flag = true;
+		m_enemy[i].die_flag = true;
+	}
 }
 
 //************************************************************************
@@ -1214,7 +1226,7 @@ void Battle::Playing(Player *player, Enemy *enemy, Camera *camera)
 	Command_Play_Move();
 	if (m_ally[2].turn_flag)
 	{
-		Command_Smooth(&command_pos[0], VectorGet(FIRST_COMMAND_X, FIRST_COMMAND_Y), KEY_SPEED);
+		Command_Smooth(&m_command_pos[0], VectorGet(FIRST_COMMAND_X, FIRST_COMMAND_Y), KEY_SPEED);
 		if (m_ally[0].command_play_flag  &&
 			m_ally[1].command_play_flag  &&
 			m_ally[2].command_play_flag  &&
@@ -1234,65 +1246,31 @@ void Level_Up(Chara *chara, int pattern)
 	int hp_up_rate, mp_up_rate, pow_up_rate, def_up_rate, m_pow_up_rate, m_res_up_rate, ski_up_rate, spd_up_rate;
 	int chara_level_stats_up_rock;
 	chara_level_stats_up_rock = chara->status[_level_];
+	Chara base[4];
+	Status_Loader(base, 4, "data/save/chara_status_up.csv");
 	//ステータスの上がり方調節
-	switch (pattern)
-	{
-	case 0://戦士型（HP、攻撃、防御上がりやすい）
-		hp_up_rate = 2;
-		mp_up_rate = 5;
-		pow_up_rate = 2;
-		def_up_rate = 3;
-		m_pow_up_rate = 8;
-		m_res_up_rate = 8;
-		ski_up_rate = 5;
-		spd_up_rate = 6;
-		break;
-	case 1://魔法使い型（MP、攻魔、器用さ上がりやすい）
-		hp_up_rate = 6;
-		mp_up_rate = 2;
-		pow_up_rate = 6;
-		def_up_rate = 8;
-		m_pow_up_rate = 2;
-		m_res_up_rate = 4;
-		ski_up_rate = 3;
-		spd_up_rate = 8;
-		break;
-	case 2://僧侶型（MP、回魔、防御上がりやすい）
-		hp_up_rate = 4;
-		mp_up_rate = 3;
-		pow_up_rate = 5;
-		def_up_rate = 3;
-		m_pow_up_rate = 6;
-		m_res_up_rate = 2;
-		ski_up_rate = 6;
-		spd_up_rate = 5;
-		break;
-	case 3://盗賊型（攻撃、すばやさ、きようさ上がりやすい）
-		hp_up_rate = 6;
-		mp_up_rate = 4;
-		pow_up_rate = 3;
-		def_up_rate = 6;
-		m_pow_up_rate = 4;
-		m_res_up_rate = 4;
-		ski_up_rate = 2;
-		spd_up_rate = 3;
-		break;
-	default:
-		break;
-	}
+	hp_up_rate    = (int)(base[pattern].status[_hp_]    / (50 + chara->status[_level_]));
+	mp_up_rate    = (int)(base[pattern].status[_mp_]    / (50 + chara->status[_level_]));
+	pow_up_rate   = (int)(base[pattern].status[_pow_]   / (50 + chara->status[_level_]));
+	def_up_rate   = (int)(base[pattern].status[_def_]   / (50 + chara->status[_level_]));
+	m_pow_up_rate = (int)(base[pattern].status[_m_pow_] / (50 + chara->status[_level_]));
+	m_res_up_rate = (int)(base[pattern].status[_m_res_] / (50 + chara->status[_level_]));
+	ski_up_rate   = (int)(base[pattern].status[_ski_]   / (50 + chara->status[_level_]));
+	spd_up_rate   = (int)(base[pattern].status[_spd_]   / (50 + chara->status[_level_]));
+	//レベルアップしてく
 	while(chara->status[_exp_goal_] < chara->status[_exp_])
 	{
 		chara->status[_level_]++;
-		chara->status[_max_hp_] += chara->status[_max_hp_] / hp_up_rate - chara_level_stats_up_rock;
-		chara->status[_hp_] = chara->status[_max_hp_];
-		chara->status[_max_mp_] += chara->status[_max_mp_] / mp_up_rate - chara_level_stats_up_rock;
-		chara->status[_mp_] = chara->status[_max_mp_];
-		chara->status[_pow_] += chara->status[_pow_] / pow_up_rate - chara_level_stats_up_rock;
-		chara->status[_def_] += chara->status[_def_] / def_up_rate - chara_level_stats_up_rock;
-		chara->status[_m_pow_] += chara->status[_m_pow_] / m_pow_up_rate - chara_level_stats_up_rock;
-		chara->status[_m_res_] += chara->status[_m_res_] / m_res_up_rate - chara_level_stats_up_rock;
-		chara->status[_ski_] += chara->status[_ski_] / ski_up_rate - chara_level_stats_up_rock;
-		chara->status[_spd_] += chara->status[_spd_] / spd_up_rate - chara_level_stats_up_rock;
+		chara->status[_max_hp_]  += chara->status[_max_hp_] / hp_up_rate    - chara_level_stats_up_rock;
+		chara->status[_hp_]       = chara->status[_max_hp_];
+		chara->status[_max_mp_]  += chara->status[_max_mp_] / mp_up_rate    - chara_level_stats_up_rock;
+		chara->status[_mp_]       = chara->status[_max_mp_];
+		chara->status[_pow_]     += chara->status[_pow_]    / pow_up_rate   - chara_level_stats_up_rock;
+		chara->status[_def_]     += chara->status[_def_]    / def_up_rate   - chara_level_stats_up_rock;
+		chara->status[_m_pow_]   += chara->status[_m_pow_]  / m_pow_up_rate - chara_level_stats_up_rock;
+		chara->status[_m_res_]   += chara->status[_m_res_]  / m_res_up_rate - chara_level_stats_up_rock;
+		chara->status[_ski_]     += chara->status[_ski_]    / ski_up_rate   - chara_level_stats_up_rock;
+		chara->status[_spd_]     += chara->status[_spd_]    / spd_up_rate   - chara_level_stats_up_rock;
 		chara->status[_exp_goal_] = ((chara->status[_exp_goal_] * 2) + (chara->status[_exp_goal_] / 2) + (chara->status[_exp_goal_] % 2));
 	}
 }
@@ -1314,10 +1292,10 @@ void Battle::Updata(int *scene, Player *player, Enemy *enemy, Camera *camera, Ma
 		music->boss_battle(0);
 	}
 	//戦闘が終わっていなかったら中の処理をする
-	if (!end_flag)
+	if (!m_end_flag)
 	{
 		//ランダム用カウント
-		rand_count++;
+		m_rand_count++;
 		//コマンド打ち込み処理
 		Commanding(player, enemy, camera, map, *music);
 		//コマンド打った後の動き
@@ -1327,7 +1305,7 @@ void Battle::Updata(int *scene, Player *player, Enemy *enemy, Camera *camera, Ma
 	else
 	{
 		//メッセージコマンド枠を画面下側に移動
-		Command_Smooth(&command_pos[0], VectorGet(FIRST_COMMAND_X, FIRST_COMMAND_Y), KEY_SPEED);
+		Command_Smooth(&m_command_pos[0], VectorGet(FIRST_COMMAND_X, FIRST_COMMAND_Y), KEY_SPEED);
 		//敵がボスじゃないとき
 		if (m_enemy[0].name != BOSS_NAME)
 		{
@@ -1343,8 +1321,8 @@ void Battle::Updata(int *scene, Player *player, Enemy *enemy, Camera *camera, Ma
 		//決定キーを押したら
 		if (getKey(KEY_INPUT_RETURN) == KEY_STATE_PUSHDOWN)
 		{
-			rast_count++;
-			switch (rast_count)
+			m_rast_count++;
+			switch (m_rast_count)
 			{
 			case 0:
 				break;
@@ -1369,7 +1347,7 @@ void Battle::Updata(int *scene, Player *player, Enemy *enemy, Camera *camera, Ma
 				}
 				else
 				{
-					rast_count = -1;
+					m_rast_count = -1;
 				}
 				break;
 			case 3:
@@ -1383,7 +1361,7 @@ void Battle::Updata(int *scene, Player *player, Enemy *enemy, Camera *camera, Ma
 				}
 				else
 				{
-					rast_count = -1;
+					m_rast_count = -1;
 				}
 				break;
 			case 4:
@@ -1393,14 +1371,17 @@ void Battle::Updata(int *scene, Player *player, Enemy *enemy, Camera *camera, Ma
 				}
 				else
 				{
-					rast_count = -1;
+					m_rast_count = -1;
 				}
 				break;
 			default:
 				//キャラのステータス継承
 				for (int i = 0; i < 3; i++)
 				{
-					player->c_ally[i] = m_ally[i];
+					for (int j = 0; j < 13; j++)
+					{
+						player->c_ally[i].status[j] = m_ally[i].status[j];
+					}
 				}
 				Init(camera, player);
 				//シーンをフィールドに戻す
@@ -1423,32 +1404,32 @@ void Battle::Draw(int *scene, Player *player, Enemy *enemy, Map *map, Camera *ca
 	enemy->Battle_Draw(*this, effect);
 	float rate = 0.8f;
 
-	if(!end_flag)
+	if(!m_end_flag)
 	{
 		//アニメーション用カウント
-		anim_count++;
+		m_anim_count++;
 		//ーーーーーー
 		// UI
 		//ーーーーーー
 		//最初の～が現れたってやつ
-		DrawGraph((int)command_pos[0].x, (int)command_pos[0].y, first_frame_graph, TRUE);
+		DrawGraph((int)m_command_pos[0].x, (int)m_command_pos[0].y, m_first_frame_graph, TRUE);
 		if (first_count < 100 && camera->sight_point_flag[1] == true)
 		{
-		    Command_Smooth(&command_pos[0], VectorGet(FIRST_COMMAND_X, FIRST_COMMAND_Y), KEY_SPEED);
-		    comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), m_enemy[0].name_origin);
+		    Command_Smooth(&m_command_pos[0], VectorGet(FIRST_COMMAND_X, FIRST_COMMAND_Y), KEY_SPEED);
+		    comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), m_enemy[0].name_origin);
 			std::size_t name_num = m_enemy[0].name_origin.size() / 2;
-		    comment->Draw((float)(command_pos[0].x + 300 + (name_num * STRING_SIZE_W)), (float)(command_pos[0].y + 30), "たちがあらわれた！");
+		    comment->Draw((float)(m_command_pos[0].x + 300 + (name_num * STRING_SIZE_W)), (float)(m_command_pos[0].y + 30), "たちがあらわれた！");
 			first_count++;
 		}
 		//コマンド選択中に表示
 		if (!m_ally[2].turn_flag && first_count >= 100)
 		{
 		    //コマンド枠をずらす
-		    Command_Smooth(&command_pos[0], VectorGet(FIRST_COMMAND_X, FIRST_COMMAND_Y + 200), KEY_SPEED);
-		    Command_Smooth(&command_pos[1], VectorGet(10.0f, 10.0f), KEY_SPEED);
+		    Command_Smooth(&m_command_pos[0], VectorGet(FIRST_COMMAND_X, FIRST_COMMAND_Y + 200), KEY_SPEED);
+		    Command_Smooth(&m_command_pos[1], VectorGet(10.0f, 10.0f), KEY_SPEED);
 		    //キャラのステータス
-			window->Command_Draw(command_pos[1].x, command_pos[1].y, STATUS_COMMAND_SIZE_X, STATUS_COMMAND_SIZE_Y);
-			status_Draw(m_ally, command_pos[1], count_graph, count_graph_orange, count_graph_red, rate, comment);
+			window->Command_Draw(m_command_pos[1].x, m_command_pos[1].y, STATUS_COMMAND_SIZE_X, STATUS_COMMAND_SIZE_Y);
+			Status_Draw(m_ally, 3, m_command_pos[1], m_count_graph, m_count_graph_orange, m_count_graph_red, rate, comment);
 		    //キャラのコマンド
 			if (!m_ally[0].turn_flag)//１Ｐ
 			{
@@ -1467,82 +1448,82 @@ void Battle::Draw(int *scene, Player *player, Enemy *enemy, Map *map, Camera *ca
 		{
 			Command_Play_Draw(comment, &m_ally[0], &m_ally[1], &m_ally[2], &m_enemy[0], &m_enemy[1], &m_enemy[2], &m_enemy[3], 150);
 		}
-		//printfDx("%.1f %.1f\n", key_pos[2].x, key_pos[2].y);
+		//printfDx("%.1f %.1f\n", m_key_pos[2].x, m_key_pos[2].y);
 		//printfDx("%d %d %d %d %d %d %d\n", camera_flag[0], camera_flag[1], camera_flag[2], camera_flag[3], camera_flag[4], camera_flag[5], camera_flag[6]);
 	}
 	else
 	{
 		std::size_t name_size = m_enemy[0].name.size() / 2;
 		int exp = 0;
-		switch (rast_count)
+		switch (m_rast_count)
 		{
 		case 0:
-			comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), m_enemy[0].name);
-			comment->Draw((float)(command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(command_pos[0].y + 30), "たちをやっつけた！");
+			comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), m_enemy[0].name);
+			comment->Draw((float)(m_command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(m_command_pos[0].y + 30), "たちをやっつけた！");
 			break;
 		case 1:
-			comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), m_ally[0].name);
+			comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), m_ally[0].name);
 			name_size = m_ally[0].name.size() / 2;
-			comment->Draw((float)(command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(command_pos[0].y + 30), "たちは");
+			comment->Draw((float)(m_command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(m_command_pos[0].y + 30), "たちは");
 			for (int i = 0; i < 4; i++)
 			{
 				exp += m_enemy[i].status[_exp_];
 			}
-			Count_Draw_2D(count_graph, exp, (float)(command_pos[0].x + 300 + (name_size * STRING_SIZE_W) + 150), (float)(command_pos[0].y + 30));
-			comment->Draw((float)(command_pos[0].x + 300 + (name_size * STRING_SIZE_W) + 250), (float)(command_pos[0].y + 30), "けいけんちをかくとく！");
+			Count_Draw_2D(m_count_graph, exp, (float)(m_command_pos[0].x + 300 + (name_size * STRING_SIZE_W) + 150), (float)(m_command_pos[0].y + 30));
+			comment->Draw((float)(m_command_pos[0].x + 300 + (name_size * STRING_SIZE_W) + 250), (float)(m_command_pos[0].y + 30), "けいけんちをかくとく！");
 			break;
 		case 2:
 			if (m_ally[0].status[_exp_goal_] < m_ally[0].status[_exp_])
 			{
-				comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), m_ally[0].name);
+				comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), m_ally[0].name);
 				name_size = m_ally[0].name.size() / 2;
-				comment->Draw((float)(command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(command_pos[0].y + 30), "はレベルがあがった！");
+				comment->Draw((float)(m_command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(m_command_pos[0].y + 30), "はレベルがあがった！");
 			}
 			else if (m_ally[1].status[_exp_goal_] < m_ally[1].status[_exp_])
 			{
-				comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), m_ally[1].name);
+				comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), m_ally[1].name);
 				name_size = m_ally[1].name.size() / 2;
-				comment->Draw((float)(command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(command_pos[0].y + 30), "はレベルがあがった！");
+				comment->Draw((float)(m_command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(m_command_pos[0].y + 30), "はレベルがあがった！");
 			}
 			else if (m_ally[2].status[_exp_goal_] < m_ally[2].status[_exp_])
 			{
-				comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), m_ally[2].name);
+				comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), m_ally[2].name);
 				name_size = m_ally[2].name.size() / 2;
-				comment->Draw((float)(command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(command_pos[0].y + 30), "はレベルがあがった！");
+				comment->Draw((float)(m_command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(m_command_pos[0].y + 30), "はレベルがあがった！");
 			}
 			else
 			{
-				comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), "ＥＮＴＥＲでもどる");
+				comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), "ＥＮＴＥＲでもどる");
 			}
 			break;
 		case 3:
 			if (m_ally[1].status[_exp_goal_] < m_ally[1].status[_exp_])
 			{
-				comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), m_ally[1].name);
+				comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), m_ally[1].name);
 				name_size = m_ally[1].name.size() / 2;
-				comment->Draw((float)(command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(command_pos[0].y + 30), "はレベルがあがった！");
+				comment->Draw((float)(m_command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(m_command_pos[0].y + 30), "はレベルがあがった！");
 			}
 			else if (m_ally[2].status[_exp_goal_] < m_ally[2].status[_exp_])
 			{
-				comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), m_ally[2].name);
+				comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), m_ally[2].name);
 				name_size = m_ally[2].name.size() / 2;
-				comment->Draw((float)(command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(command_pos[0].y + 30), "はレベルがあがった！");
+				comment->Draw((float)(m_command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(m_command_pos[0].y + 30), "はレベルがあがった！");
 			}
 			else
 			{
-				comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), "ＥＮＴＥＲでもどる");
+				comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), "ＥＮＴＥＲでもどる");
 			}
 			break;
 		case 4:
 			if (m_ally[2].status[_exp_goal_] < m_ally[2].status[_exp_])
 			{
-				comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), m_ally[2].name);
+				comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), m_ally[2].name);
 				name_size = m_ally[2].name.size() / 2;
-				comment->Draw((float)(command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(command_pos[0].y + 30), "はレベルがあがった！");
+				comment->Draw((float)(m_command_pos[0].x + 300 + (name_size * STRING_SIZE_W)), (float)(m_command_pos[0].y + 30), "はレベルがあがった！");
 			}
 			else
 			{
-				comment->Draw((float)(command_pos[0].x + 300), (float)(command_pos[0].y + 30), "ＥＮＴＥＲでもどる");
+				comment->Draw((float)(m_command_pos[0].x + 300), (float)(m_command_pos[0].y + 30), "ＥＮＴＥＲでもどる");
 			}
 			break;
 		}

@@ -63,7 +63,7 @@ bool Save::FileLoader(const char * _filename, const int line_num)
 			//”š‚É•ÏŠ·istring ==> intj
 			m_data_case_2[row][lineIndex] = stoi(strvec.at(row));
 		}
-		++lineIndex;
+		lineIndex++;
 
 		if (lineIndex > line_num)
 		{

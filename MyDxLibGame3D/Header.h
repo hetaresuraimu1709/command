@@ -1,33 +1,39 @@
-//Header.h
+//********************************************************
+// Header.h
+//
+// いろいろなHeaderファイルをまとめてるとこ
+//********************************************************
+
 #ifndef _HEADER_H_
 #define _HEADER_H_
 
 //いろんなヘッダーのまとめ
-#include "DxLib.h"
-#include "EffekseerForDXLib.h"
-#include <math.h>
-#include <iostream>
-#include <map>
-#include "Define.h"
-#include "Music.h"
-#include "Player.h"
-#include "Effect.h"
-#include "Camera.h"
-#include "Map.h"
-#include "Inputkey.h"
-#include "Enemy.h"
-#include "Comment_string.h"
-#include "Battle.h"
-#include "Title.h"
-#include "Memory.h"
-#include "Npc.h"
-#include "Window.h"
-#include "Field.h"
-#include "Save.h"
+#include "DxLib.h"				//DXライブラリ
+#include "EffekseerForDXLib.h"	//エフェクシアをDXライブラリで使えるように
+#include <math.h>				//平方根出すのに使用
+#include <iostream>				//CommentString用
+#include <map>					//CommentString用
+#include "Define.h"				//#define系の定数まとめファイル
+#include "Music.h"				//サウンド系のファイル
+#include "Player.h"				//プレイヤー関係のファイル
+#include "Effect.h"				//エフェクト関係のファイル
+#include "Camera.h"				//カメラ関係のファイル
+#include "Map.h"				//フィールドマップ関係のファイル
+#include "Inputkey.h"			//キー入力関係のファイル
+#include "Enemy.h"				//敵関係のファイル
+#include "CommentString.h"		//画像から切り抜いた文字を打ち込むプログラム関係のファイル
+#include "Battle.h"				//戦闘中関係のファイル
+#include "Title.h"				//タイトル関係のファイル
+#include "Memory.h"				//特技やアイテムのステータス関係のファイル
+#include "Npc.h"				//NonPlayerCharacter関係のファイル
+#include "Window.h"				//コマンドウィンドウを書くプログラム関係のファイル
+#include "Field.h"				//フィールド中のアクション関係のファイル
+#include "Save.h"				//セーブ、ロード関係のファイル
 
 //function.cppで作った関数のプロトタイプ宣言
 void Turn_Around(float &now_dir, float max_dir, float speed_dir, bool &turn_flag);
 void Status_Check(int *data1, int *data2, int *data3);
+void Status_Loader(Chara *chara, int num, const char *_filename);
 void Chara_Status_Load(Chara *chara, int num, int pattern);
 void Chara_Status_Save(Chara *chara);
 Chara Status_Get(std::string chara_name, char *file_name, Vector3 f_pos, Vector3 b_pos, int _hp, int _mp, int _pow, int _def, int _m_pow, int _m_res, int _ski, int _spd, int _exp, bool ally_or_enemy_flag);
@@ -62,8 +68,8 @@ Vector3 Vector_Cross(Vector3 p1, Vector3 p2, Vector3 p3);
 void Debug_Vector3_Pos(Vector3 *pos, Vector3 *center_point,float pos_speed, float cen_speed);//デバッグ用
 //コマンド用関数
 bool Cursor(float pos, float max);
-void Move_Cursor(float *key_pos, unsigned char key_code, float max, int command_max, float move, int *count, Music music);
-void Set_Move_Cursor(float *key_pos, unsigned char key_code_1, unsigned char key_code_2, float max, int command_max, float move, int *count_1, int *count_2, Music music);
+void Move_Cursor(float *m_key_pos, unsigned char key_code, float max, int command_max, float move, int *count, Music music);
+void Set_Move_Cursor(float *m_key_pos, unsigned char key_code_1, unsigned char key_code_2, float max, int command_max, float move, int *count_1, int *count_2, Music music);
 void Decide_Command(Vector2 key_pos_1, Vector2 *key_pos_2, bool *command_flag, bool *behavior_flag, float max_y, float move_y, int comand_y, float max_x, float move_x, int comand_x, Vector2 setpos, Music music);
 void Decide_Command_2(Vector2 key_pos_1, Vector2 *key_pos_2, bool *command_flag, bool *behavior_flag, float max_y, float move_y, int comand_y, float max_x, float move_x, int comand_x, Vector2 setpos, Music music);
 void Command_Back(bool *behavior_flag, bool *command_flag, int max_command, Music music);
@@ -75,5 +81,5 @@ void Enemy_Count_Draw_3D(int *number_graph, int draw_count, float x, float y, fl
 void Set_HPber(float pos_x, float pos_y, float rate, int color);
 void Pos_Adjustment(Vector2 *pos);
 void Pos_Adjustment(Vector3 *pos);
-void status_Draw(Chara *chara, Vector2 command_pos, int *normal_graph, int *orange_graph, int *red_graph, float rate, Comment_string *comment);
+void Status_Draw(Chara *chara, int chara_num, Vector2 m_command_pos, int *normal_graph, int *orange_graph, int *red_graph, float rate, Comment_string *comment);
 #endif // _HEADER_H_
